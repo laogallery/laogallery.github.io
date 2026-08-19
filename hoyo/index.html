@@ -8,52 +8,52 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",sans-serif;background:#fff;color:#111;max-width:720px;margin:0 auto;-webkit-tap-highlight-color:transparent}
 .hd{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 8px}
-.hd .t{font-size:26px;font-weight:700;letter-spacing:-.5px}
-.hd .x{font-size:15px;color:#007aff;background:none;border:none;cursor:pointer}
-.crumb{padding:4px 20px 10px;font-size:14px;color:#007aff;display:none;flex-wrap:wrap;gap:3px}
+.hd .t{font-size:26px;font-weight:700;letter-spacing:-.5px;color:#1e3a8a}
+.hd .x{font-size:15px;color:#2563eb;background:none;border:none;cursor:pointer}
+.crumb{padding:4px 20px 10px;font-size:14px;color:#2563eb;display:none;flex-wrap:wrap;gap:3px}
 .crumb span{cursor:pointer}
-.crumb .s{color:#c7c7cc;margin:0 4px}
+.crumb .s{color:#94a3b8;margin:0 4px}
 .list{background:#fff;padding:0 20px}
-.row{display:flex;align-items:center;padding:15px 2px;border-bottom:1px solid #f2f2f7;cursor:pointer}
+.row{display:flex;align-items:center;padding:15px 2px;border-bottom:1px solid #f1f5f9;cursor:pointer}
 .row:last-child{border-bottom:none}
-.row .ic{width:46px;height:46px;border-radius:10px;background:#f2f2f7;display:flex;align-items:center;justify-content:center;font-size:24px;margin-right:14px}
+.row .ic{width:46px;height:46px;border-radius:10px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:24px;margin-right:14px}
 .row .tx{flex:1}
 .row .tx .n{font-size:17px;font-weight:600}
-.row .tx .m{font-size:13px;color:#8e8e93;margin-top:2px}
-.row .ar{color:#c7c7cc;font-size:20px}
-.empty{padding:80px 20px;text-align:center;color:#c7c7cc;font-size:15px}
-.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid #e5e5ea;display:flex;max-width:720px;margin:0 auto;padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
-.tabbar button{flex:1;background:none;border:none;padding:4px 0;font-size:10px;color:#8e8e93;cursor:pointer}
+.row .tx .m{font-size:13px;color:#64748b;margin-top:2px}
+.row .ar{color:#94a3b8;font-size:20px}
+.empty{padding:80px 20px;text-align:center;color:#94a3b8;font-size:15px}
+.tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.94);backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid #dbeafe;display:flex;max-width:720px;margin:0 auto;padding:6px 0 calc(8px + env(safe-area-inset-bottom))}
+.tabbar button{flex:1;background:none;border:none;padding:4px 0;font-size:10px;color:#64748b;cursor:pointer}
 .tabbar button .i{font-size:23px;display:block;margin-bottom:2px}
-.tabbar button.on{color:#007aff}
+.tabbar button.on{color:#2563eb}
 .page{display:none;padding-bottom:110px}
 .page.on{display:block}
-.big{background:#007aff;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:600;width:100%;padding:16px;cursor:pointer}
-.big:disabled{background:#c7c7cc}
-.gray{color:#8e8e93;font-size:12px;text-align:center;margin-top:8px}
+.big{background:#2563eb;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:600;width:100%;padding:16px;cursor:pointer}
+.big:disabled{background:#94a3b8}
+.gray{color:#64748b;font-size:12px;text-align:center;margin-top:8px}
 .up{text-align:center;padding:40px 24px 4px}
-.up .tar{color:#007aff;font-size:16px;background:#f2f2f7;border:none;border-radius:12px;padding:13px 18px;width:100%;cursor:pointer;margin-bottom:26px}
-.up .plus{width:96px;height:96px;border-radius:22px;background:#f2f2f7;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:40px;color:#007aff;cursor:pointer}
+.up .tar{color:#2563eb;font-size:16px;background:#f1f5f9;border:none;border-radius:12px;padding:13px 18px;width:100%;cursor:pointer;margin-bottom:26px}
+.up .plus{width:96px;height:96px;border-radius:22px;background:#f1f5f9;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:40px;color:#2563eb;cursor:pointer}
 .pv{display:flex;flex-wrap:wrap;gap:10px;padding:20px}
 .pv .it{position:relative;width:84px}
-.pv img,.pv video{width:84px;height:104px;object-fit:cover;border-radius:10px;background:#f2f2f7}
+.pv img,.pv video{width:84px;height:104px;object-fit:cover;border-radius:10px;background:#f1f5f9}
 .pv .rm{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.75);color:#fff;border:none;font-size:13px;line-height:22px}
-.btn{background:#f2f2f7;border:none;border-radius:10px;padding:13px;font-size:16px;width:100%;margin-top:10px;cursor:pointer}
+.btn{background:#f1f5f9;border:none;border-radius:10px;padding:13px;font-size:16px;width:100%;margin-top:10px;cursor:pointer}
 .sheet{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:20;align-items:flex-end}
 .sheet .b{background:#fff;border-radius:16px 16px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom));max-height:75%;overflow-y:auto;width:100%}
-.sheet .grab{width:40px;height:5px;background:#e5e5ea;border-radius:3px;margin:6px auto 12px}
-.sheet .it2{padding:15px 8px;border-bottom:1px solid #f2f2f7;font-size:16px;display:flex;justify-content:space-between}
+.sheet .grab{width:40px;height:5px;background:#dbeafe;border-radius:3px;margin:6px auto 12px}
+.sheet .it2{padding:15px 8px;border-bottom:1px solid #f1f5f9;font-size:16px;display:flex;justify-content:space-between}
 .sheet .it2:last-child{border-bottom:none}
-.sheet .can{padding:13px;text-align:center;color:#007aff;font-size:16px;border:none;background:#f2f2f7;width:100%;border-radius:12px;margin-top:10px;cursor:pointer}
-.tMenu{background:#fff;border-bottom:0.5px solid #e5e5ea;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
-.tMenu button{background:none;border:1px solid #e5e5ea;color:#111;border-radius:20px;padding:6px 14px;font-size:14px;cursor:pointer}
-input[type=text]{width:100%;padding:15px;border:0;border-bottom:1px solid #f2f2f7;font-size:17px;outline:none}
+.sheet .can{padding:13px;text-align:center;color:#2563eb;font-size:16px;border:none;background:#f1f5f9;width:100%;border-radius:12px;margin-top:10px;cursor:pointer}
+.tMenu{background:#fff;border-bottom:0.5px solid #dbeafe;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+.tMenu button{background:none;border:1px solid #dbeafe;color:#111;border-radius:20px;padding:6px 14px;font-size:14px;cursor:pointer}
+input[type=text]{width:100%;padding:15px;border:0;border-bottom:1px solid #f1f5f9;font-size:17px;outline:none}
 .set2{padding:4px 20px}
-.set2 label{font-size:13px;color:#8e8e93;margin-top:14px;display:block}
+.set2 label{font-size:13px;color:#64748b;margin-top:14px;display:block}
 </style>
 </head>
 <body>
-<div class="hd"><div class="t">课表</div><button class="x" id="out" style="display:none" onclick="bye()">退出</button></div>
+<div class="hd"><div class="t">🎓 课表管理</div><button class="x" id="out" style="display:none" onclick="bye()">退出</button></div>
 <div class="crumb" id="cr"><span onclick="go([])">首页</span></div>
 
 <div class="page on" id="pg1">
@@ -100,10 +100,10 @@ input[type=text]{width:100%;padding:15px;border:0;border-bottom:1px solid #f2f2f
 </div></div>
 
 <div class="sheet" id="lg2"><div class="b" style="text-align:center">
-  <div style="font-size:20px;font-weight:700;margin:10px 0 4px">登录</div>
+  <div style="font-size:20px;font-weight:700;margin:10px 0 4px;color:#1e3a8a">登录</div>
   <div class="gray" style="margin-bottom:14px">Token + 密码（记住一次）</div>
-  <input type="text" id="tk" placeholder="GitHub Token" style="border:1px solid #e5e5ea;border-radius:12px;margin-bottom:6px">
-  <input type="password" id="pw" placeholder="密码 hoyo2010" style="border:1px solid #e5e5ea;border-radius:12px;margin-bottom:12px">
+  <input type="text" id="tk" placeholder="GitHub Token" style="border:1px solid #dbeafe;border-radius:12px;margin-bottom:6px">
+  <input type="password" id="pw" placeholder="密码 hoyo2010" style="border:1px solid #dbeafe;border-radius:12px;margin-bottom:12px">
   <button class="big" onclick="login()">进入</button>
 </div></div>
 
@@ -183,7 +183,7 @@ function openT(){
   (function walk(a,path,label){a.forEach(function(c,i){
     var p2=path.concat([i]);var lab=label?label+" / "+c.name:c.name;
     var r=document.createElement("div");r.className="it2";
-    r.innerHTML='<span>'+(c.pwHash?"🔒 ":"📁 ")+esc(lab)+'</span><span style="color:#c7c7cc">'+c.media.length+'</span>';
+    r.innerHTML='<span>'+(c.pwHash?"🔒 ":"📁 ")+esc(lab)+'</span><span style="color:#94a3b8">'+c.media.length+'</span>';
     r.onclick=function(){target=p2;document.getElementById("target").textContent=pathName(p2);cs();sh2();};
     l.appendChild(r);
     walk(c.children||[],p2,lab);
@@ -199,13 +199,13 @@ function sh2(){
     if(mc.length){var h=document.createElement("div");h.className="gray";h.style.width="100%";h.textContent="已有 "+mc.length+" 个媒体：";pv.appendChild(h);}
     mc.forEach(function(m,j){
       var w=document.createElement("div");w.className="it";
-      w.innerHTML=(m.t==="vid"?'<video src="'+m.s+'" style="width:84px;height:104px;object-fit:cover;background:#f2f2f7"></video>':'<img src="'+m.s+'">')+'<button class="rm" onclick="rmm('+j+')">×</button>';
+      w.innerHTML=(m.t==="vid"?'<video src="'+m.s+'" style="width:84px;height:104px;object-fit:cover;background:#f1f5f9"></video>':'<img src="'+m.s+'">')+'<button class="rm" onclick="rmm('+j+')">×</button>';
       pv.appendChild(w);
     });
   }
   pend.forEach(function(m,j){
     var w=document.createElement("div");w.className="it";
-    w.innerHTML=(m.t==="vid"?'<video src="'+m.d+'" style="width:84px;height:104px;object-fit:cover;background:#f2f2f7"></video>':'<img src="'+m.d+'">')+'<button class="rm" onclick="rmp('+j+')">×</button>';
+    w.innerHTML=(m.t==="vid"?'<video src="'+m.d+'" style="width:84px;height:104px;object-fit:cover;background:#f1f5f9"></video>':'<img src="'+m.d+'">')+'<button class="rm" onclick="rmp('+j+')">×</button>';
     pv.appendChild(w);
   });
 }
