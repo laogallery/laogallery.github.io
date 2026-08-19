@@ -3,163 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>课表后台 v5</title>
+<title>课表后台</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#222;padding:14px;max-width:760px;margin:0 auto}
-.logo{font-size:20px;font-weight:800;margin-bottom:2px}
-.sub{font-size:12px;color:#888;margin-bottom:14px}
-.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
-.h2{font-size:15px;font-weight:700;margin-bottom:12px;border-left:4px solid #ff7043;padding-left:8px}
-input[type=text],input[type=password]{width:100%;padding:11px 12px;border:1px solid #d5d9e0;border-radius:10px;font-size:15px;margin:4px 0 8px}
-input[type=file]{width:100%;padding:10px;border:1px dashed #bbb;border-radius:10px;background:#fafbfc;font-size:13px;margin:4px 0 10px}
-.btn{display:inline-block;background:#ff7043;color:#fff;border:none;padding:11px 18px;border-radius:10px;font-size:15px;cursor:pointer;margin:4px 4px 0 0}
-.btn.g{background:#6b7280}.btn.r{background:#dc2626}.btn.b{background:#10b981}.btn.o{background:#fff;border:1px solid #d5d9e0;color:#555}
-.row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 8px;border-bottom:1px solid #f0f0f0}
-.row:last-child{border-bottom:none}
-.nm{font-size:15px;font-weight:600}
-.meta{font-size:11px;color:#999;margin-top:2px}
-.bread{font-size:13px;margin-bottom:12px;color:#ff7043}
-.bread span{cursor:pointer;background:#fff;border:1px solid #ffd9c7;padding:4px 10px;border-radius:16px;margin-right:6px;color:#e2502a}
-.media{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-.mi{width:100px}
-.mi img,.mi video{width:100px;height:110px;object-fit:cover;border-radius:8px;background:#eee}
-.mi .rm{display:block;margin:4px auto 0;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:3px 12px;font-size:12px;cursor:pointer}
-.big{width:100%;text-align:center;font-size:17px;font-weight:800;padding:15px;background:#10b981;border:none;color:#fff;border-radius:12px;cursor:pointer}
-#st{font-size:13px;color:#555;margin-top:10px;min-height:18px}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f6f8;color:#222;padding-bottom:70px}
+.hd{background:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;position:sticky;top:0;z-index:5}
+.hd .t{font-size:18px;font-weight:800}
+.hd .x{font-size:13px;color:#999;border:none;background:none;cursor:pointer}
+.page{display:none;padding:14px}
+.page.on{display:block}
+.bread{font-size:13px;color:#e2502a;margin-bottom:10px;overflow-x:auto;white-space:nowrap}
+.bread span{background:#fff;border:1px solid #ffd9c7;padding:4px 10px;border-radius:14px;margin-right:6px;display:inline-block}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.fo{background:#fff;border-radius:14px;padding:14px 6px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.05);position:relative}
+.fo .ic{font-size:38px}
+.fo .nm{font-size:13px;font-weight:700;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fo .mt{font-size:10px;color:#999;margin-top:2px}
+.fo .op{position:absolute;top:4px;right:4px;font-size:16px;color:#bbb;background:none;border:none;cursor:pointer}
+.newbtn{position:fixed;right:16px;bottom:84px;background:#ff7043;color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:26px;box-shadow:0 4px 14px rgba(255,112,67,.4);z-index:5}
+.upbox{background:#fff;border-radius:16px;padding:16px;text-align:center;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.upbox .tar{display:block;width:100%;padding:13px;border:1.5px dashed #ff7043;border-radius:12px;background:#fff7f3;font-size:16px;color:#e2502a;margin-bottom:10px;cursor:pointer}
+.upbox .plus{font-size:44px;color:#ff7043}
+.upbox .pt{font-size:13px;color:#999;margin-top:6px}
+.pv{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.pv .it{position:relative;width:72px}
+.pv img,.pv video{width:72px;height:88px;object-fit:cover;border-radius:8px;background:#eee}
+.pv .rm{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px}
+.savebtn{width:100%;padding:16px;background:#10b981;color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer}
+#st{font-size:13px;color:#555;text-align:center;margin-top:8px;min-height:18px}
+.ml{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ml .it{position:relative;width:86px}
+.ml img,.ml video{width:86px;height:104px;object-fit:cover;border-radius:8px;background:#eee}
+.ml .rm{position:absolute;top:-4px;right:-4px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px}
+.tab{position:fixed;left:0;right:0;bottom:0;background:#fff;display:flex;border-top:1px solid #eee;z-index:10}
+.tab button{flex:1;padding:9px 0 10px;border:none;background:none;font-size:11px;color:#999;cursor:pointer}
+.tab button .i{font-size:20px;display:block;margin-bottom:2px}
+.tab button.on{color:#ff7043;font-weight:700}
 .tip{font-size:11px;color:#999;line-height:1.7;margin-top:8px}
-.login{max-width:400px;margin:60px auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 6px 30px rgba(0,0,0,.08)}
+input{width:100%;padding:11px;border:1px solid #d5d9e0;border-radius:10px;font-size:15px;margin:6px 0}
+.setrow{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.setrow h3{font-size:14px;margin-bottom:6px}
+.login{max-width:380px;margin:70px auto;background:#fff;border-radius:18px;padding:30px;box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center}
+.login .lg{font-size:36px;margin-bottom:8px}
+.ld{border:none;color:#fff;background:none;font-size:13px;padding:6px 0;cursor:pointer}
+#sel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;padding:20px}
+#sel .box{background:#fff;border-radius:16px;max-height:70%;overflow-y:auto;padding:16px}
+#sel h3{font-size:15px;margin-bottom:8px}
+#sel .opt{padding:12px;border-bottom:1px solid #f0f0f0;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+#sel .opt:last-child{border-bottom:none}
+#sel .close{width:100%;margin-top:10px;padding:10px;border:none;background:#f0f0f0;border-radius:10px;font-size:14px;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="loginBox" class="login">
-  <div style="text-align:center;font-size:20px;font-weight:800;margin-bottom:6px">🔐 课表后台</div>
-  <div class="sub" style="text-align:center;margin-bottom:16px">登录一次，浏览器记住</div>
-  <input type="text" id="tk" placeholder="GitHub Token">
-  <input type="password" id="pw" placeholder="管理密码 hoyo2010">
-  <button class="btn" style="width:100%;text-align:center;font-size:16px" onclick="login()">登录</button>
+<div class="hd"><div class="t">📚 课表后台</div><button class="x" id="out" style="display:none" onclick="bye()">退出</button></div>
+
+<!-- ===== 分类 ===== -->
+<div class="page on" id="pg1">
+  <div class="bread" id="bread"><span onclick="go([])">🏠 首页</span></div>
+  <div class="grid" id="grid"></div>
+  <p class="tip" id="hint">点文件夹打开，右下角➕新建分类</p>
+  <button class="newbtn" onclick="mk()">＋</button>
 </div>
 
-<div id="main" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <div><div class="logo">📚 课表管理</div><div class="sub">打开文件夹 → 上传 → 保存到网站</div></div>
-    <button class="btn g" onclick="location.reload()">退出</button>
-  </div>
-
-  <div class="card">
-    <div class="h2">📁 文件夹</div>
-    <div class="bread" id="bread"><span onclick="go([])">🏠 首页</span></div>
-    <div id="cats"></div>
-    <div style="display:flex;gap:6px;margin-top:10px">
-      <input type="text" id="nn" placeholder="新建分类名" style="flex:2;margin:0">
-      <button class="btn" style="margin:0" onclick="addCat()">➕ 新建</button>
+<!-- ===== 上传 ===== -->
+<div class="page" id="pg2">
+  <div class="upbox">
+    <button class="tar" id="target">📂 点这里选上传到哪个文件夹</button>
+    <input type="file" id="f" accept="image/*,video/*" multiple style="display:none">
+    <div onclick="pick()" style="cursor:pointer;padding:16px">
+      <div class="plus">＋</div><div class="pt">点击选择图片 / 视频（可多选）</div>
     </div>
+    <div class="pv" id="pv"></div>
   </div>
+  <button class="savebtn" onclick="save()">🔄 保存到网站</button>
+  <div id="st"></div>
+  <div class="tip">保存后前台 20 秒内自动更新。视频建议 ≤60MB；传了大视频请尽快保存，别刷新页面。</div>
+</div>
 
-  <div class="card">
-    <div class="h2" id="mh">⬆️ 上传（请先打开一个文件夹）</div>
-    <input type="file" id="f" accept="image/*,video/*" multiple>
-    <button class="btn b" onclick="up()">⬆️ 上传所选</button>
-    <div id="medialist" class="media"><div class="tip">这里显示当前文件夹的图片/视频</div></div>
-  </div>
+<!-- ===== 设置 ===== -->
+<div class="page" id="pg3">
+  <div class="setrow"><h3>🌐 网站名称</h3><input id="st2" placeholder="最新课表展示"><input id="sd2" placeholder="点击分类查看课表"></div>
+  <div class="setrow"><h3>ℹ️ 关于</h3><div class="tip">数据存在 GitHub 云端，任何人通过 https://laogallery.github.io 都能访问。</div></div>
+</div>
 
-  <div class="card" style="background:#eefbf3;border:1px solid #bfe8cd">
-    <button class="big" onclick="save()">🔄 保存到网站</button>
-    <div id="st"></div>
-    <div class="tip">保存后，前台 20 秒内自动更新（https://laogallery.github.io）</div>
-  </div>
+<div class="tab">
+  <button id="tb1" class="on" onclick="sw(1)"><span class="i">📁</span>分类</button>
+  <button id="tb2" onclick="sw(2)"><span class="i">⬆️</span>上传</button>
+  <button id="tb3" onclick="sw(3)"><span class="i">⚙️</span>设置</button>
+</div>
+
+<div id="sel"><div class="box">
+  <h3>📂 选择目标文件夹</h3>
+  <div id="selList"></div>
+  <button class="close" onclick="closeSel()">取消</button>
+</div></div>
+
+<div class="login" id="lg" style="display:none">
+  <div class="lg">🔐</div>
+  <div style="font-size:18px;font-weight:800;margin-bottom:4px">登录</div>
+  <div class="tip" style="margin-bottom:10px">Token + 管理密码，浏览器会记住</div>
+  <input type="text" id="tk" placeholder="GitHub Token">
+  <input type="password" id="pw" placeholder="密码 hoyo2010">
+  <button class="savebtn" onclick="login()">进入</button>
 </div>
 
 <script>
-var K="gd_v5",TOKEN="",PW="hoyo2010",D={t:"最新课表展示",s:"点击分类查看课表",cats:[]},nav=[];
+var K="gd_v6",TOKEN="",PW="hoyo2010",D={t:"最新课表展示",s:"点击分类查看课表",cats:[]},nav=[],target=null,pend=[];
 var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function node(){var n=D.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
-function curNode(){if(!nav.length)return null;var n=D.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n[nav[nav.length-1]];}
+function nd(){if(target===null)return null;var n=D.cats;for(var i=0;i<target.length;i++)n=n[target[i]].children||[];return n[target[target.length-1]];}
 function ld(){try{var s=localStorage.getItem(K);if(s){var d=JSON.parse(s);if(d&&d.cats)D=d;}}catch(e){}}
-function sv(){try{var c=JSON.parse(JSON.stringify(D));(function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return m.t==="vid"?{t:"vid",s:m.s}:{t:"img",s:m.s,d:m.d};});w(x.children||[]);});})(c.cats);localStorage.setItem(K,JSON.stringify(c));}catch(e){}}
+function sv(){try{var c=JSON.parse(JSON.stringify(D));(function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return m.t==="vid"?{t:m.t,s:m.s}:{t:m.t,s:m.s,d:m.d};});w(x.children||[]);});})(c.cats);localStorage.setItem(K,JSON.stringify(c));}catch(e){}}
+function st(m){document.getElementById("st").textContent=m;}
+function sw(i){document.getElementById("pg1").className="page"+(i===1?" on":"");document.getElementById("pg2").className="page"+(i===2?" on":"");document.getElementById("pg3").className="page"+(i===3?" on":"");document.getElementById("tb1").className=i===1?"on":"";document.getElementById("tb2").className=i===2?"on":"";document.getElementById("tb3").className=i===3?"on":"";}
 function login(){
   var t=document.getElementById("tk").value.trim(),p=document.getElementById("pw").value;
   if(p!==PW){alert("密码错误");return;}
   if(!t){alert("请输入Token");return;}
   fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}})
   .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(u){if(u.login!=="laogallery"){alert("Token不属于本账号");return;}TOKEN=t;localStorage.setItem("gd_tk",t);document.getElementById("loginBox").style.display="none";document.getElementById("main").style.display="block";loadC();})
+  .then(function(u){if(u.login!=="laogallery"){alert("Token不属于本账号");return;}TOKEN=t;localStorage.setItem("gd_tk",t);document.getElementById("lg").style.display="none";document.getElementById("out").style.display="block";loadC();})
   .catch(function(){alert("Token无效，请重试");});
 }
+function bye(){localStorage.removeItem("gd_tk");location.reload();}
 function gh(p,m,d2){return fetch(API+p,{method:m||"GET",headers:{"Authorization":"token "+TOKEN,"User-Agent":"ga","Content-Type":"application/json"},body:d2?JSON.stringify(d2):undefined});}
 function b64u(s){return btoa(unescape(encodeURIComponent(s)));}
 function d64(s){return decodeURIComponent(escape(atob(s)));}
 function mig(x){if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}x.media=x.media||[];x.children=(x.children||[]).map(mig);return x;}
 function loadC(){
-  st("读取云端...");
   Promise.all([
     gh("/content/settings.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var s=JSON.parse(d64(j.content));D.t=s.siteTitle||D.t;D.s=s.siteDesc||D.s;}}).catch(()=>{}),
     gh("/content/index.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){D.cats=JSON.parse(d64(j.content)).map(mig);}}).catch(()=>{})
-  ]).then(function(){sv();show();st("✅ 已读取");});
+  ]).then(function(){sv();sh1();sh2();document.getElementById("st2").value=D.t;document.getElementById("sd2").value=D.s;});
 }
-function show(){
-  // 面包屑
+function sh1(){
   var b=document.getElementById("bread"),h='<span onclick="go([])">🏠 首页</span>';
   var names=[],n=D.cats;
   for(var i=0;i<nav.length;i++){names.push(n[nav[i]]?n[nav[i]].name:"?");n=n[nav[i]].children||[];}
   for(var k=0;k<names.length;k++){h+='<span onclick="go('+JSON.stringify(nav.slice(0,k+1))+')">'+esc(names[k])+'</span>';}
   b.innerHTML=h;
-  // 分类列表
-  var lv=node(),box=document.getElementById("cats");box.innerHTML="";
-  if(!lv.length)box.innerHTML='<div class="tip">还没有分类，下面新建一个</div>';
+  var lv=node(),g=document.getElementById("grid");g.innerHTML="";
+  if(!lv.length)g.innerHTML='<div style="grid-column:1/-1;text-align:center;color:#bbb;padding:40px 0">还没有分类<br>点右下角 ➕ 新建</div>';
   lv.forEach(function(c,i){
     var kids=(c.children||[]).length,ms=(c.media||[]).length;
-    var d=document.createElement("div");d.className="row";
-    d.innerHTML='<div style="flex:1"><div class="nm">'+esc(c.name)+(c.pwHash?" 🔒":"")+'</div><div class="meta">'+(kids?"子分类 "+kids+" · ":"")+ms+" 个媒体</div></div>"+
-      '<div><button class="btn o" style="margin:0 0 0 3px" onclick="into('+i+')">📂 打开</button>'+
-      '<button class="btn o" style="margin:0 0 0 3px" onclick="setpw('+i+')">🔒</button>'+
-      '<button class="btn o" style="margin:0 0 0 3px" onclick="edit('+i+')">✏️</button>'+
-      '<button class="btn r" style="margin:0 0 0 3px" onclick="del('+i+')">🗑</button></div>';
-    box.appendChild(d);
-  });
-  // 媒体
-  document.getElementById("mh").textContent="⬆️ 上传"+(curNode()?"（当前文件夹："+curNode().name+"）":"（请先打开一个文件夹）");
-  var ml=document.getElementById("medialist");ml.innerHTML="";
-  if(!nav.length){ml.innerHTML='<div class="tip">点上面分类的「📂 打开」进入文件夹后，才能上传</div>';return;}
-  var mc=curNode().media;
-  if(!mc.length)ml.innerHTML='<div class="tip">这个文件夹还没有媒体</div>';
-  mc.forEach(function(m,j){
-    var w=document.createElement("div");w.className="mi";
-    var u=m.d||m.s;
-    w.innerHTML=(m.t==="vid"?'<video src="'+u+'" style="width:100px;height:110px;object-fit:cover;background:#000"></video>':'<img src="'+u+'">')+'<button class="rm" onclick="rm('+j+')">删除</button>';
-    ml.appendChild(w);
+    var d=document.createElement("div");d.className="fo";
+    d.innerHTML='<button class="op" onclick="opm('+i+')">⋯</button><div class="ic">'+(c.pwHash?"🔒":"📁")+'</div><div class="nm">'+esc(c.name)+'</div><div class="mt">'+(kids?"子分类 "+kids:ms+" 媒体")+'</div>';
+    d.onclick=function(){into(i);};
+    g.appendChild(d);
   });
 }
-function go(p){nav=p;show();}
-function into(i){if(nav.length>=2){alert("最多三级");return;}nav=nav.concat([i]);show();}
-function addCat(){var n=document.getElementById("nn").value.trim();if(!n){alert("输入名字");return;}if(nav.length>=2){alert("已达三级上限");return;}node().push({name:n,desc:"",pwHash:"",media:[],children:[]});document.getElementById("nn").value="";sv();show();st("已新建（保存后生效）");}
-function edit(i){var n=prompt("分类名",node()[i].name);if(n==null)return;node()[i].name=n;sv();show();st("已改");}
-function del(i){if(!confirm("删除该分类（含子分类和媒体）？"))return;node().splice(i,1);sv();show();st("已删");}
+function go(p){nav=p;sh1();}
+function into(i){if(nav.length>=2){alert("最多三级");return;}nav=nav.concat([i]);sh1();}
+function mk(){
+  if(nav.length>=2){alert("已达三级上限，请直接在分类里上传媒体");return;}
+  var n=prompt("新分类名：");if(!n)return;
+  node().push({name:n,desc:"",pwHash:"",media:[],children:[]});sv();sh1();
+}
+function opm(i){
+  var c=node()[i];var a=prompt("操作：1 改名  2 设密码  3 取消密码  4 删除\n(输入数字)", "1");
+  if(!a)return;
+  if(a==="1"){var n=prompt("新名字",c.name);if(n){c.name=n;sv();sh1();}}
+  else if(a==="2"){var p=prompt("设置打开密码：");if(p){sha256(p).then(function(h){c.pwHash=h;sv();sh1();});}}
+  else if(a==="3"){c.pwHash="";sv();sh1();}
+  else if(a==="4"){if(confirm("删除「"+c.name+"」及其子分类/媒体？")){node().splice(i,1);sv();sh1();}}
+}
 function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
-function setpw(i){
-  var c=node()[i],p=prompt("设置打开密码（留空=取消）：");
-  if(p==null)return;
-  if(p===""){c.pwHash="";sv();show();st("已取消密码");return;}
-  sha256(p).then(function(h){c.pwHash=h;sv();show();st("✅ 已设密码");});
+function openSel(){document.getElementById("sel").style.display="block";var l=document.getElementById("selList");l.innerHTML="";
+  (function walk(a,path,label){a.forEach(function(c,i){
+    var p2=path.concat([i]);var lab=label?label+" / "+c.name:c.name;
+    var r=document.createElement("div");r.className="opt";
+    r.innerHTML='<span>'+(c.pwHash?"🔒 ":"📁 ")+esc(lab)+'</span><span style="color:#999;font-size:12px">'+(c.media.length)+' 媒体</span>';
+    r.onclick=function(){target=p2;document.getElementById("target").textContent="📂 "+esc(lab);closeSel();sh2();};
+    l.appendChild(r);
+    walk(c.children||[],p2,lab);
+  });})(D.cats,[],"");
 }
-function rm(j){curNode().media.splice(j,1);sv();show();st("已删（保存后生效）");}
-function up(){
-  var fs=document.getElementById("f").files;if(!fs.length){alert("先选文件");return;}
-  if(!nav.length){alert("先打开一个文件夹");return;}
-  var arr=Array.from(fs),done=0,t0=Date.now();
+function closeSel(){document.getElementById("sel").style.display="none";}
+document.getElementById("target").onclick=openSel;
+function sh2(){
+  var pv=document.getElementById("pv");pv.innerHTML="";
+  pend.forEach(function(m,j){
+    var w=document.createElement("div");w.className="it";
+    w.innerHTML=(m.t==="vid"?'<video src="'+m.d+'" style="width:72px;height:88px;object-fit:cover;background:#000"></video>':'<img src="'+m.d+'">')+'<button class="rm" onclick="rmp('+j+')">×</button>';
+    pv.appendChild(w);
+  });
+  if(!pend.length&&target!==null){var mc=nd().media;var ml2=document.getElementById("pv");
+    var old=document.createElement("div");old.style.width="100%";
+    old.innerHTML='<div class="tip">当前文件夹已有 '+mc.length+' 个媒体：</div>';
+    pv.appendChild(old);
+    mc.forEach(function(m,j){
+      var w=document.createElement("div");w.className="it";
+      w.innerHTML=(m.t==="vid"?'<video src="'+m.s+'" style="width:72px;height:88px;object-fit:cover;background:#000"></video>':'<img src="'+m.s+'">')+'<button class="rm" onclick="rmm('+j+')">×</button>';
+      pv.appendChild(w);
+    });
+  }
+}
+function rmm(j){nd().media.splice(j,1);sv();sh2();}
+function rmp(j){var it=pend[j];if(it){var mi=nd().media.indexOf(it);if(mi>=0)nd().media.splice(mi,1);}pend.splice(j,1);sv();sh2();}
+function pick(){document.getElementById("f").click();}
+document.getElementById("f").onchange=function(){
+  if(target===null){alert("先点上方选目标文件夹");this.value="";return;}
+  var arr=Array.from(this.files),done=0,t0=Date.now();
   (function nx(){
-    if(done>=arr.length){sv();show();document.getElementById("f").value="";st("已添加 "+arr.length+" 个（点保存生效）");return;}
+    if(done>=arr.length){sv();sh2();document.getElementById("f").value="";st("已选 "+arr.length+" 个（点保存生效）");return;}
     var f=arr[done];
     if(f.type.startsWith("video/")){
       if(f.size>60*1024*1024){alert("视频超60MB："+f.name);done++;nx();return;}
-      var r=new FileReader();r.onload=function(e){curNode().media.push({t:"vid",s:"/media/v_"+t0+"_"+done+"."+(f.name.split(".").pop()||"mp4"),d:e.target.result});done++;nx();};r.readAsDataURL(f);
+      var r=new FileReader();r.onload=function(e){var it={t:"vid",s:"/media/v_"+t0+"_"+done+"."+(f.name.split(".").pop()||"mp4"),d:e.target.result};nd().media.push(it);pend.push(it);done++;nx();};r.readAsDataURL(f);
     }else if(f.type.startsWith("image/")){
-      var r2=new FileReader();r2.onload=function(e){var im=new Image();im.onload=function(){var w=900,h=im.height*900/im.width;var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);curNode().media.push({t:"img",s:"/media/img_"+t0+"_"+done+".jpg",d:c.toDataURL("image/jpeg",0.55)});done++;nx();};im.src=e.target.result;};r2.readAsDataURL(f);
+      var r2=new FileReader();r2.onload=function(e){var im=new Image();im.onload=function(){var w=900,h=im.height*900/im.width;var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);var it={t:"img",s:"/media/img_"+t0+"_"+done+".jpg",d:c.toDataURL("image/jpeg",0.55)};nd().media.push(it);pend.push(it);done++;nx();};im.src=e.target.result;};r2.readAsDataURL(f);
     }else{done++;nx();}
   })();
-}
-function st(m){document.getElementById("st").textContent=m;}
+};
 function ghPut(p,ct,rt){
   return gh(p+"?t="+Date.now()).then(r=>r.ok?r.json():null).then(function(ex){
     var b={message:"sync",content:b64u(ct),branch:"main"};if(ex&&ex.sha)b.sha=ex.sha;
@@ -171,7 +227,7 @@ function save(){
   (function col(a){a.forEach(function(x){x.media.forEach(function(m){if(m.d&&m.s.indexOf("media/")>=0){var b=m.d.indexOf(",")>=0?m.d.substring(m.d.indexOf(",")+1):m.d;tasks.push({p:m.s,b:b});m.d="";}});col(x.children||[]);});})(D.cats);
   var i=0;
   (function nx(){
-    if(i>=tasks.length){sv();show();
+    if(i>=tasks.length){sv();pend=[];sh2();
       var clean=JSON.parse(JSON.stringify(D));
       (function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return {t:m.t,s:m.s};});w(x.children||[]);});})(clean.cats);
       Promise.all([
@@ -187,8 +243,11 @@ function save(){
     ghPut("/"+tasks[i].p.replace(/^\//,""),tasks[i].b,1).then(function(ok){if(!ok)alert("媒体上传失败："+tasks[i].p);i++;nx();});
   })();
 }
+document.getElementById("st2").onchange=function(){D.t=this.value;};
+document.getElementById("sd2").onchange=function(){D.s=this.value;};
 var t=localStorage.getItem("gd_tk");
-if(t){TOKEN=t;fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}}).then(r=>r.ok?r.json():null).then(function(u){if(u&&u.login==="laogallery"){document.getElementById("loginBox").style.display="none";document.getElementById("main").style.display="block";loadC();}}).catch(()=>{});}
+if(t){TOKEN=t;fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}}).then(r=>r.ok?r.json():null).then(function(u){if(u&&u.login==="laogallery"){document.getElementById("lg").style.display="none";document.getElementById("out").style.display="block";loadC();}}).catch(()=>{});
+}else{document.getElementById("lg").style.display="block";}
 ld();
 </script>
 </body>
