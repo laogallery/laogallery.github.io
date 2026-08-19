@@ -42,7 +42,7 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#14161a;c
 <body>
 <div class="top">
   <h1 id="siteTitle">图片画廊</h1>
-  <p id="siteDesc">点击分类文件夹查看图片</p>
+  <p id="siteDesc">点击分类文件夹查看课表</p>
 </div>
 <div class="wrap">
   <div id="view"></div>
@@ -52,7 +52,7 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#14161a;c
   <span class="close">×</span><img id="lbImg" src=""><div class="cap" id="lbCap"></div>
 </div>
 <script>
-var cats=[],settings={siteTitle:"图片画廊",siteDesc:"点击分类文件夹查看图片"};
+var cats=[],settings={siteTitle:"最新课表展示",siteDesc:"点击分类文件夹查看课表"};
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function loadAll(){
   return Promise.all([
@@ -63,8 +63,8 @@ function loadAll(){
   });
 }
 function renderHome(){
-  document.getElementById("siteTitle").textContent=settings.siteTitle||"图片画廊";
-  document.getElementById("siteDesc").textContent=settings.siteDesc||"点击分类文件夹查看图片";
+  document.getElementById("siteTitle").textContent=settings.siteTitle||"最新课表展示";
+  document.getElementById("siteDesc").textContent=settings.siteDesc||"点击分类文件夹查看课表";
   var v=document.getElementById("view");
   if(!cats.length){v.innerHTML='<div class="empty">暂无分类</div>';return;}
   var h='<div class="folders">';
