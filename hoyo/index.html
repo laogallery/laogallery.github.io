@@ -175,7 +175,7 @@ function sync(){
   // 1) 先上传所有新图片（data URL → media 文件）
   var tasks=[],n=0;
   data.cats.forEach(function(c){c.images.forEach(function(im){
-    if(im.d&&im.src.indexOf("media/")>=0){im.src=im.src.charAt(0)==="/"?im.src:"/"+im.src;tasks.push({p:im.src,c:im.d});im.d="";}
+    if(im.d&&im.src.indexOf("media/")>=0){im.src=im.src.charAt(0)==="/"?im.src:"/"+im.src;var b64d=im.d.indexOf(",")>=0?im.d.substring(im.d.indexOf(",")+1):im.d;tasks.push({p:im.src,c:b64d});im.d="";}
   });});
   var up=function(i){
     if(i>=tasks.length)return Promise.resolve({bad:[]});
