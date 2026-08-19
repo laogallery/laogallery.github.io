@@ -124,16 +124,19 @@ function editCat(i){var n=prompt("分类名",data.cats[i].name);if(n==null)retur
 function delCat(i){if(!confirm("删除该分类？"))return;data.cats.splice(i,1);save();render();setSt("已删除（点「同步」生效）");}
 function mv(i,dir){var j=i+dir;if(j<0||j>=data.cats.length)return;var t=data.cats[i];data.cats[i]=data.cats[j];data.cats[j]=t;save();render();}
 function openCat(i){cur=i;document.getElementById("curCatN").textContent=data.cats[i].name;document.getElementById("imgCard").style.display="block";renderImgs();}
-function renderImgs(){var b=document.getElementById("imgList");b.innerHTML="";(data.cats[cur].images||[]).forEach(function(im,j){var w=document.createElement("span");w.className="thumb";w.style.position="relative";w.innerHTML='<img src="'+im.src+'" style="width:56px;height:70px;object-fit:cover;border-radius:6px"><button class="x" onclick="delImg('+j+')">×</button>';b.appendChild(w);});}
+function renderImgs(){var b=document.getElementById("imgList");b.innerHTML="";(data.cats[cur].images||[]).forEach(function(im,j){var w=document.createElement("span");w.className="thumb";w.style.position="relative";w.innerHTML='<img src="'+(im.d||im.src)+'" style="width:56px;height:70px;object-fit:cover;border-radius:6px"><button class="x" onclick="delImg('+j+')">×</button>';b.appendChild(w);});}
 function delImg(j){data.cats[cur].images.splice(j,1);save();renderImgs();setSt("已删除（点「同步」生效）");}
 function addPics(){
   var fs=document.getElementById("file").files;if(!fs.length){alert("请选择图片");return;}
-  var arr=Array.from(fs).filter(f=>f.type.startsWith("image/")),done=0;
+  var arr=Array.from(fs).filter(f=>f.type.startsWith("image/")),done=0,t0=Date.now();
   (function next(){
     if(done>=arr.length){save();renderImgs();document.getElementById("file").value="";setSt("已添加 "+arr.length+" 张（点「同步」生效）");return;}
     var f=arr[done],r=new FileReader();
     r.onload=function(e){var img=new Image();
-      img.onload=function(){var max=1000,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);data.cats[cur].images.push({src:c.toDataURL("image/jpeg",0.65),title:""});done++;next();};
+      img.onload=function(){var max=900,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);
+        var file="media/img_"+t0+"_"+done+".jpg";
+        data.cats[cur].images.push({src:file,d:c.toDataURL("image/jpeg",0.55),title:""});
+        done++;next();};
       img.src=e.target.result;};
     r.readAsDataURL(f);
   })();
@@ -146,14 +149,49 @@ function putF(path,content,msg){
     return gh(path,"PUT",b2).then(function(r){return r.ok;});
   }).catch(function(){return false;});
 }
+function ghPut(path,content,retry){
+  return gh(path+"?t="+Date.now()).then(r=>r.ok?r.json():null).then(function(ex){
+    var b2={message:"sync",content:b64u(content),branch:"main"};
+    if(ex&&ex.sha)b2.sha=ex.sha;
+    return gh(path,"PUT",b2).then(function(r){
+      if(r.ok)return {ok:true};
+      if(retry>0)return ghPut(path,content,retry-1);
+      return {ok:false,code:r.status};
+    });
+  }).catch(function(e){if(retry>0)return ghPut(path,content,retry-1);return {ok:false,code:"网络"};});
+}
 function sync(){
-  setSt("正在同步...");
-  Promise.all([
-    putF("/content/settings.json",JSON.stringify({siteTitle:data.siteTitle,siteDesc:data.siteDesc},null,0),"同步设置"),
-    putF("/content/index.json",JSON.stringify(data.cats,null,0),"同步分类数据")
-  ]).then(function(res){
-    if(res[0]&&res[1]){setSt("✅ 同步成功！前台20秒内自动更新");alert("✅ 已同步到网站，前台马上更新");}
-    else{setSt("❌ 同步失败：Token可能无效，请重新登录（退出后重新填Token）");alert("❌ 同步失败：Token无效或网络错误\n请点右上角「退出登录」重新输入Token");}
+  setSt("同步中，请稍候...");
+  // 1) 先上传所有新图片（data URL → media 文件）
+  var tasks=[],n=0;
+  data.cats.forEach(function(c){c.images.forEach(function(im){
+    if(im.d&&im.src.indexOf("media/")===0){tasks.push({p:im.src,c:im.d});im.d="";}
+  });});
+  var up=function(i){
+    if(i>=tasks.length)return Promise.resolve({bad:[]});
+    var t=tasks[i];
+    return ghPut("/"+t.p,t.c,1).then(function(r){
+      if(!r.ok)return up(i+1).then(function(x){x.bad.push(t.p+"("+r.code+")");return x;});
+      return up(i+1);
+    });
+  };
+  // 2) 图片传完 → 写小 JSON
+  up(0).then(function(res){
+    var clean=JSON.parse(JSON.stringify(data.cats));
+    clean.forEach(function(c){c.images.forEach(function(im){delete im.d;});});
+    return Promise.all([
+      ghPut("/content/settings.json",JSON.stringify({siteTitle:data.siteTitle,siteDesc:data.siteDesc},null,0),1),
+      ghPut("/content/index.json",JSON.stringify(clean,null,0),1)
+    ]).then(function(rr){
+      var ok1=rr[0].ok,ok2=rr[1].ok,msg="";
+      if(ok1&&ok2){save();setSt("✅ 同步成功！前台20秒内自动更新");alert("✅ 已同步到网站，前台马上更新");}
+      else{
+        if(res.bad.length)msg="\n图片失败: "+res.bad.slice(0,3).join("; ");
+        var why=!ok1?("设置"+rr[0].code):("数据"+rr[1].code);
+        setSt("❌ 同步失败("+why+")"+msg);
+        alert("❌ 同步失败："+why+msg+"\n建议：检查网络后重试；若持续失败请退出重新登录");
+      }
+    });
   });
 }
 // 启动
