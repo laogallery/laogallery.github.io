@@ -111,7 +111,7 @@ function show(){
   lv.forEach(function(c,i){
     var kids=(c.children||[]).length,ms=(c.media||[]).length;
     var d=document.createElement("div");d.className="row";
-    d.innerHTML='<div style="flex:1"><div class="nm">'+esc(c.name)+(c.pwHash?" 🔒":"")+'</div><div class="meta">'+(kids?"子分类 "+kids+" · ":"")+ms+" 个媒体</div></div>'+
+    d.innerHTML='<div style="flex:1"><div class="nm">'+esc(c.name)+(c.pwHash?" 🔒":"")+'</div><div class="meta">'+(kids?"子分类 "+kids+" · ":"")+ms+" 个媒体</div></div>"+
       '<div><button class="btn o" style="margin:0 0 0 3px" onclick="into('+i+')">📂 打开</button>'+
       '<button class="btn o" style="margin:0 0 0 3px" onclick="setpw('+i+')">🔒</button>'+
       '<button class="btn o" style="margin:0 0 0 3px" onclick="edit('+i+')">✏️</button>'+
