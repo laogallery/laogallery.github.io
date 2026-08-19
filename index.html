@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>课表展示</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f7fb;color:#1e293b;min-height:100vh}
+.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);padding:26px 16px;text-align:center;position:relative}
+.top h1{color:#fff;font-size:23px}
+.top p{color:#bfdbfe;font-size:13px;margin-top:5px}
+.wrap{max-width:860px;margin:0 auto;padding:16px 14px 50px}
+.crumb{font-size:13px;margin-bottom:12px}
+.crumb span{color:#2563eb;cursor:pointer;background:#fff;border:1px solid #dbeafe;padding:4px 10px;border-radius:14px;margin-right:6px;display:inline-block}
+.folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.fo{background:#fff;border-radius:14px;padding:18px 8px;text-align:center;cursor:pointer;border:1px solid #dbeafe;box-shadow:0 2px 8px rgba(37,99,235,.08)}
+.fo .ic{font-size:40px}
+.fo .nm{font-size:14px;font-weight:700;margin-top:5px}
+.fo .mt{font-size:11px;color:#94a3b8;margin-top:3px}
+.pics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.pi{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;cursor:pointer;position:relative}
+.pi img{width:100%;display:block;max-height:300px;object-fit:contain;background:#f8fafc}
+.pi video{width:100%;display:block;max-height:300px;background:#000}
+.pi .vt{position:absolute;top:6px;left:6px;background:rgba(30,58,138,.8);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px}
+.empty{text-align:center;color:#94a3b8;padding:50px 0;font-size:14px}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:99;flex-direction:column;align-items:center;justify-content:center}
+#lb img,#lb video{max-width:95%;max-height:85%;border-radius:8px}
+#lb .x{position:absolute;top:14px;right:20px;color:#fff;font-size:30px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="top"><h1 id="t">课表展示</h1><p id="s">点击分类查看</p><span style="position:absolute;right:8px;top:8px;background:rgba(255,255,255,.2);color:#dbeafe;font-size:10px;padding:2px 8px;border-radius:10px">v9</span></div>
+<div class="wrap">
+  <div class="crumb" id="cr"></div>
+  <div id="v"></div>
+</div>
+<div id="lb" onclick="this.style.display='none'"><span class="x">×</span><img id="bi"><video id="bv" controls style="display:none"></video></div>
+<script>
+var cats=[],st={t:"课表展示",s:"点击分类查看"},nav=[],unlocked={};
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function mig(x){if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}x.media=x.media||[];x.children=(x.children||[]).map(mig);return x;}
+function cur(){var n=cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
+function load(){
+  Promise.all([
+    fetch("content/settings.json?t="+Date.now()).then(r=>r.json()).catch(()=>({})),
+    fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>[])
+  ]).then(function(a){
+    st={t:a[0].siteTitle||"课表展示",s:a[0].siteDesc||"点击分类查看"};
+    cats=(a[1]||[]).map(mig);render();
+  });
+}
+function render(){
+  document.getElementById("t").textContent=st.t;
+  document.getElementById("s").textContent=st.s;
+  var cr=document.getElementById("cr"),h='<span onclick="go([])">🏠 首页</span>';
+  if(nav.length){var names=[],n=cats;for(var i=0;i<nav.length;i++){names.push(n[nav[i]].name);n=n[nav[i]].children||[];}
+    for(var k=0;k<names.length;k++){h+=' › <span onclick="go('+JSON.stringify(nav.slice(0,k+1))+')">'+esc(names[k])+'</span>';}}
+  cr.innerHTML=h;
+  var v=document.getElementById("v"),html="";
+  var lv=nav.length?cur()[nav[nav.length-1]].children||[]:cats;
+  if(lv.length){
+    html+='<div class="folders">';
+    lv.forEach(function(c,i){
+      html+='<div class="fo" onclick="openNode('+i+')"><div class="ic">'+(c.pwHash?"🔒":"📁")+'</div><div class="nm">'+esc(c.name)+'</div><div class="mt">'+(c.media||[]).length+' 媒体</div></div>';
+    });
+    html+='</div>';
+  }
+  var ms=nav.length?(cur()[nav[nav.length-1]].media||[]):[];
+  if(ms.length)html+='<div class="pics">'+ms.map(function(m,j){
+    var u=m.s.charAt(0)==="/"?("https://laogallery.github.io"+m.s):m.s;
+    return m.t==="vid"?'<div class="pi" onclick="play(\''+u+'\')"><video src="'+u+'" preload="metadata"></video><span class="vt">▶</span></div>':'<div class="pi" onclick="lb(\''+u+'\')"><img src="'+u+'" loading="lazy"></div>';
+  }).join('')+'</div>';
+  if(!lv.length&&!ms.length)html='<div class="empty">暂无内容</div>';
+  v.innerHTML=html;
+}
+function go(p){nav=p;render();}
+function openNode(i){
+  var p=nav.concat([i]),c=cats;
+  for(var k=0;k<p.length-1;k++)c=c[p[k]].children||[];
+  var t=c[i];
+  if(t.pwHash&&!unlocked[p.join("-")]){var pw=prompt("🔒 输入密码：");if(pw==null)return;sha256(pw).then(function(h){if(h===t.pwHash){unlocked[p.join("-")]=1;nav=p;render();}else alert("密码错误");});return;}
+  nav=p;render();
+}
+function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
+function lb(u){var b=document.getElementById("bi");b.style.display="block";b.src=u;document.getElementById("bv").style.display="none";document.getElementById("lb").style.display="flex";}
+function play(u){var b=document.getElementById("bv");b.style.display="block";b.src=u;document.getElementById("bi").style.display="none";document.getElementById("lb").style.display="flex";}
+load();
+setInterval(function(){fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>null).then(function(d){if(d&&JSON.stringify(d)!==JSON.stringify(cats)){cats=d.map(mig);render();}});},20000);
+</script>
+</body>
+</html>
