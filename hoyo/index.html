@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>管理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#f5f7fb;color:#1e293b;max-width:760px;margin:0 auto;padding-bottom:90px;-webkit-tap-highlight-color:transparent}
+.top{background:linear-gradient(135deg,#1e3a8a,#2563eb);padding:18px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff}
+.top .t{font-size:19px;font-weight:800}
+.top button{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:8px;padding:7px 14px;font-size:13px;cursor:pointer}
+.crumb{padding:12px 16px 0;font-size:13px;color:#2563eb}
+.crumb span{cursor:pointer;margin-right:8px}
+.pad{padding:12px 16px}
+.btn{background:#2563eb;color:#fff;border:none;border-radius:10px;padding:13px;font-size:16px;font-weight:600;width:100%;cursor:pointer}
+.btn.g{background:#f1f5f9;color:#334155;border:1px solid #dbeafe}
+.row{background:#fff;border:1px solid #dbeafe;border-radius:12px;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:10px}
+.row .tx{flex:1}
+.row .n{font-weight:700;font-size:15px}
+.row .m{color:#94a3b8;font-size:12px;margin-top:2px}
+.row .o{display:flex;gap:6px}
+.row .o button{width:32px;height:32px;border-radius:8px;border:none;background:#f1f5f9;font-size:14px;cursor:pointer}
+.row.openable{cursor:pointer}
+.upcard{background:#fff;border:1px solid #dbeafe;border-radius:14px;padding:16px;margin-bottom:10px}
+.upcard .tar{width:100%;padding:14px;border:1.5px dashed #2563eb;border-radius:12px;background:#eff6ff;font-size:15px;color:#1d4ed8;cursor:pointer;margin-bottom:12px}
+.plus{display:flex;flex-direction:column;align-items:center;padding:18px;border:2px dashed #bfdbfe;border-radius:14px;cursor:pointer;color:#2563eb}
+.plus .p{font-size:38px;line-height:1}
+.pv{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.pv .it{position:relative;width:72px}
+.pv img,.pv video{width:72px;height:88px;object-fit:cover;border-radius:8px;background:#f1f5f9}
+.pv .rm{position:absolute;top:-5px;right:-5px;width:20px;height:20px;border-radius:50%;background:#dc2626;color:#fff;border:none;font-size:12px}
+input{width:100%;padding:13px;border:1px solid #dbeafe;border-radius:10px;font-size:15px;margin:8px 0;box-sizing:border-box}
+.login{max-width:400px;margin:60px auto;background:#fff;border-radius:16px;padding:26px;box-shadow:0 8px 30px rgba(30,58,138,.12)}
+#st{font-size:13px;color:#334155;text-align:center;margin-top:10px;min-height:18px}
+.tip{font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.7}
+.abs{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #dbeafe;padding:10px 16px;display:flex;gap:10px;max-width:760px;margin:0 auto}
+.abs button{flex:1}
+</style>
+</head>
+<body>
+<div class="top"><div class="t">🎓 课表管理</div><button id="out" style="display:none" onclick="bye()">退出</button></div>
+<div class="crumb" id="cr"><span onclick="go([])">🏠 首页</span></div>
+
+<div class="pad">
+  <div class="row" style="padding:10px"><input id="nn" placeholder="新分类名" style="margin:0;flex:1"><button class="btn" style="width:auto;padding:13px 18px" onclick="mk()">➕ 新建</button></div>
+  <div id="list"></div>
+
+  <div class="upcard">
+    <button class="tar" id="target" onclick="openT()">📂 选择目标文件夹</button>
+    <label for="f" class="plus" id="pl"><span class="p">＋</span><span style="font-size:13px;margin-top:6px">点这里选图片/视频（可多选）</span></label>
+    <input type="file" id="f" accept="image/*,video/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;left:-200px;top:0">
+    <div class="pv" id="pv"></div>
+  </div>
+
+  <button class="btn" style="background:#10b981" onclick="save()">🔄 保存到网站</button>
+  <div id="st"></div>
+  <div class="tip">保存后前台 20 秒内自动更新。视频建议 ≤60MB，上传后尽快保存。</div>
+</div>
+
+<div class="abs" style="display:none" id="bar"><button class="btn g" onclick="sw('cat')">📁 分类</button><button class="btn g" onclick="sw('up')">⬆️ 上传</button></div>
+<div id="pg" style="display:none"></div>
+
+<div class="login" id="lg" style="display:none">
+  <div style="font-size:20px;font-weight:800;color:#1e3a8a;text-align:center;margin-bottom:6px">🔐 登录</div>
+  <div class="tip" style="text-align:center;margin-bottom:8px">Token + 密码 hoyo2010（记住一次）</div>
+  <input type="text" id="tk" placeholder="GitHub Token">
+  <input type="password" id="pw" placeholder="密码 hoyo2010">
+  <button class="btn" onclick="login()">进入</button>
+</div>
+
+<script>
+var K="gd_v9",TOKEN="",PW="hoyo2010",D={t:"课表展示",s:"点击分类查看",cats:[]},nav=[],target=null,pend=[];
+var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function lv(){var n=D.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
+function nd(){if(target===null)return null;var n=D.cats;for(var i=0;i<target.length;i++)n=n[target[i]].children||[];return n[target[target.length-1]];}
+function ld(){try{var s=localStorage.getItem(K);if(s){var d=JSON.parse(s);if(d&&d.cats)D=d;}}catch(e){}}
+function sv(){try{var c=JSON.parse(JSON.stringify(D));(function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return m.t==="vid"?{t:m.t,s:m.s}:{t:m.t,s:m.s,d:m.d};});w(x.children||[]);});})(c.cats);localStorage.setItem(K,JSON.stringify(c));}catch(e){}}
+function st(m){document.getElementById("st").textContent=m;}
+function sw(which){}
+function login(){
+  var t=document.getElementById("tk").value.trim(),p=document.getElementById("pw").value;
+  if(p!==PW){alert("密码错误");return;}
+  if(!t){alert("请输入Token");return;}
+  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}})
+  .then(function(r){if(!r.ok)throw 0;return r.json();})
+  .then(function(u){if(u.login!=="laogallery"){alert("Token不属于本账号");return;}TOKEN=t;localStorage.setItem("gd_tk",t);document.getElementById("lg").style.display="none";document.getElementById("out").style.display="block";loadC();})
+  .catch(function(){alert("Token无效");});
+}
+function bye(){localStorage.removeItem("gd_tk");location.reload();}
+function gh(p,m,d2){return fetch(API+p,{method:m||"GET",headers:{"Authorization":"token "+TOKEN,"User-Agent":"ga","Content-Type":"application/json"},body:d2?JSON.stringify(d2):undefined});}
+function b64u(s){return btoa(unescape(encodeURIComponent(s)));}
+function d64(s){return decodeURIComponent(escape(atob(s)));}
+function mig(x){if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}x.media=x.media||[];x.children=(x.children||[]).map(mig);return x;}
+function loadC(){
+  Promise.all([
+    gh("/content/settings.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var s=JSON.parse(d64(j.content));D.t=s.siteTitle||D.t;D.s=s.siteDesc||D.s;}}).catch(()=>{}),
+    gh("/content/index.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){D.cats=JSON.parse(d64(j.content)).map(mig);}}).catch(()=>{})
+  ]).then(function(){sv();show();});
+}
+function show(){
+  var cr=document.getElementById("cr"),h='<span onclick="go([])">🏠 首页</span>';
+  var names=[],n=D.cats;
+  for(var i=0;i<nav.length;i++){names.push(n[nav[i]]?n[nav[i]].name:"?");n=n[nav[i]].children||[];}
+  for(var k=0;k<names.length;k++){h+=' › <span onclick="go('+JSON.stringify(nav.slice(0,k+1))+')">'+esc(names[k])+'</span>';}
+  cr.innerHTML=h;
+  var l=document.getElementById("list");l.innerHTML="";
+  var lv2=lv();
+  if(!lv2.length)l.innerHTML='<div class="tip" style="padding:14px;text-align:center">当前没有分类，上面新建一个</div>';
+  lv2.forEach(function(c,i){
+    var d=document.createElement("div");d.className="row openable";
+    var kids=(c.children||[]).length,ms=(c.media||[]).length;
+    d.innerHTML='<div style="font-size:24px">'+(c.pwHash?"🔒":"📁")+'</div><div class="tx"><div class="n">'+esc(c.name)+'</div><div class="m">'+(kids?"子分类 "+kids:"媒体 "+ms)+'</div></div>'+
+      '<div class="o"><button onclick="ev('+i+',\'open\')" title="进入">📂</button><button onclick="ev('+i+',\'up\')" title="传到这里">⬆️</button><button onclick="ev('+i+',\'ren\')" title="改名">✏️</button><button onclick="ev('+i+',\'pw\')" title="密码">🔒</button><button onclick="ev('+i+',\'del\')" title="删除">🗑</button></div>';
+    d.onclick=function(){if(nav.length<2){nav=nav.concat([i]);show();}};
+    l.appendChild(d);
+  });
+  sh2();
+}
+function go(p){nav=p;show();}
+function ev(i,act){
+  var c=lv()[i];
+  if(act==="open"){if(nav.length>=2){alert("最多三级");return;}nav=nav.concat([i]);show();}
+  else if(act==="up"){target=nav.concat([i]);document.getElementById("target").textContent="📂 "+pathName(target);sh2();}
+  else if(act==="ren"){var n=prompt("新名字",c.name);if(n){c.name=n;sv();show();}}
+  else if(act==="pw"){var p=prompt("设置密码（空=取消）");if(p==null)return;if(!p){c.pwHash="";sv();show();}else sha256(p).then(function(h){c.pwHash=h;sv();show();});}
+  else if(act==="del"){if(confirm("删除「"+c.name+"」？")){lv().splice(i,1);sv();show();}}
+}
+function pathName(p){var n=D.cats,lab="";for(var i=0;i<p.length;i++){lab=lab?lab+" / "+n[p[i]].name:n[p[i]].name;n=n[p[i]].children||[];}return lab;}
+function mk(){
+  var n=document.getElementById("nn").value.trim();if(!n){alert("输入分类名");return;}
+  if(nav.length>=2){alert("已达三级上限");return;}
+  lv().push({name:n,desc:"",pwHash:"",media:[],children:[]});
+  document.getElementById("nn").value="";sv();show();st("已新建（保存后生效）");
+}
+function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
+function openT(){
+  var sel=prompt("输入目标分类编号：\n"+listTree()+"\n（直接输入路径，如：0/1）");
+  if(!sel)return;
+  var p=sel.split("/").filter(function(x){return x!=="";}).map(Number);
+  if(!p.length||isNaN(p[0])){alert("格式不对，如 0/1");return;}
+  var n=D.cats,ok=true;
+  for(var i=0;i<p.length;i++){if(!n[p[i]]){ok=false;break;}if(i<p.length-1)n=n[p[i]].children||[];}
+  if(!ok){alert("路径不存在");return;}
+  target=p;document.getElementById("target").textContent="📂 "+pathName(p);sh2();
+}
+function listTree(){var out=[];function w(a,path,label){a.forEach(function(c,i){var p2=path.concat([i]);out.push(p2.join("/")+" = "+c.name);w(c.children||[],p2,c.name);});}w(D.cats,[],"");
+  if(!out.length)return"（还没有分类）";return out.join("\n");}
+function sh2(){
+  document.getElementById("target").textContent=target===null?"📂 选择目标文件夹":"📂 "+pathName(target);
+  var pv=document.getElementById("pv");pv.innerHTML="";
+  if(!pend.length&&target!==null){
+    (nd().media||[]).forEach(function(m,j){
+      var w=document.createElement("div");w.className="it";
+      w.innerHTML=(m.t==="vid"?'<video src="'+m.s+'" style="width:72px;height:88px;object-fit:cover;background:#f1f5f9"></video>':'<img src="'+m.s+'">')+'<button class="rm" onclick="rmm('+j+')">×</button>';
+      pv.appendChild(w);
+    });
+  }
+  pend.forEach(function(m,j){
+    var w=document.createElement("div");w.className="it";
+    w.innerHTML=(m.t==="vid"?'<video src="'+m.d+'" style="width:72px;height:88px;object-fit:cover;background:#f1f5f9"></video>':'<img src="'+m.d+'">')+'<button class="rm" onclick="rmp('+j+')">×</button>';
+    pv.appendChild(w);
+  });
+}
+function rmm(j){nd().media.splice(j,1);sv();sh2();}
+function rmp(j){var it=pend[j];if(it){var mi=nd().media.indexOf(it);if(mi>=0)nd().media.splice(mi,1);}pend.splice(j,1);sv();sh2();}
+document.getElementById("f").onchange=function(){
+  if(target===null){alert("请先点「选择目标文件夹」");this.value="";return;}
+  var arr=Array.from(this.files),done=0,t0=Date.now();
+  (function nx(){
+    if(done>=arr.length){sv();sh2();document.getElementById("f").value="";st("已选 "+arr.length+" 个，点保存");return;}
+    var f=arr[done];
+    if(f.type.startsWith("video/")){
+      if(f.size>60*1024*1024){alert("视频超60MB："+f.name);done++;nx();return;}
+      var r=new FileReader();r.onload=function(e){var it={t:"vid",s:"/media/v_"+t0+"_"+done+"."+(f.name.split(".").pop()||"mp4"),d:e.target.result};nd().media.push(it);pend.push(it);done++;nx();};r.readAsDataURL(f);
+    }else if(f.type.startsWith("image/")){
+      var r2=new FileReader();r2.onload=function(e){var im=new Image();im.onload=function(){var w=900,h=im.height*900/im.width;var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);var it={t:"img",s:"/media/img_"+t0+"_"+done+".jpg",d:c.toDataURL("image/jpeg",0.55)};nd().media.push(it);pend.push(it);done++;nx();};im.src=e.target.result;};r2.readAsDataURL(f);
+    }else{done++;nx();}
+  })();
+};
+function ghPut(p,ct,rt){
+  return gh(p+"?t="+Date.now()).then(r=>r.ok?r.json():null).then(function(ex){
+    var b={message:"sync",content:b64u(ct),branch:"main"};if(ex&&ex.sha)b.sha=ex.sha;
+    return gh(p,"PUT",b).then(function(r){if(r.ok)return true;if(rt>0)return ghPut(p,ct,rt-1);return false;});
+  }).catch(function(){if(rt>0)return ghPut(p,ct,rt-1);return false;});
+}
+function save(){
+  st("保存中...");var tasks=[];
+  (function col(a){a.forEach(function(x){x.media.forEach(function(m){if(m.d&&m.s.indexOf("media/")>=0){var b=m.d.indexOf(",")>=0?m.d.substring(m.d.indexOf(",")+1):m.d;tasks.push({p:m.s,b:b});m.d="";}});col(x.children||[]);});})(D.cats);
+  var i=0;
+  (function nx(){
+    if(i>=tasks.length){sv();pend=[];sh2();
+      var clean=JSON.parse(JSON.stringify(D));
+      (function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return {t:m.t,s:m.s};});w(x.children||[]);});})(clean.cats);
+      Promise.all([
+        ghPut("/content/settings.json",JSON.stringify({siteTitle:D.t,siteDesc:D.s})),
+        ghPut("/content/index.json",JSON.stringify(clean.cats))
+      ]).then(function(rr){
+        if(rr[0]&&rr[1]){st("✅ 已保存");alert("✅ 已保存到网站");}
+        else{alert("❌ 保存失败，请重试");st("❌ 保存失败");}
+      });
+      return;
+    }
+    st("上传 "+(i+1)+"/"+tasks.length+" ...");
+    ghPut("/"+tasks[i].p.replace(/^\//,""),tasks[i].b,1).then(function(ok){if(!ok)alert("媒体上传失败："+tasks[i].p);i++;nx();});
+  })();
+}
+var t=localStorage.getItem("gd_tk");
+if(t){TOKEN=t;fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}}).then(r=>r.ok?r.json():null).then(function(u){if(u&&u.login==="laogallery"){document.getElementById("lg").style.display="none";document.getElementById("out").style.display="block";loadC();}}).catch(()=>{});
+}else{document.getElementById("lg").style.display="block";}
+ld();
+</script>
+</body>
+</html>
