@@ -8678,7 +8678,7 @@ function render(){
   }
   var ms=nav.length?(cur()[nav[nav.length-1]].media||[]):[];
   if(ms.length)html+='<div class="medgrid">'+ms.map(function(m,j){
-    var u=m.s.charAt(0)==="/"?("https://laogallery.github.io"+m.s):m.s;
+    var u=(m.s.indexOf("http")===0)?m.s:(m.s.charAt(0)==="/"?("https://laogallery.github.io"+m.s):("https://laogallery.github.io/"+m.s));
     return m.t==="vid"?'<div class="mi" onclick="play(\''+u+'\')"><video src="'+u+'" preload="metadata"></video><span class="vt">▶ 视频</span></div>':'<div class="mi" onclick="lb(\''+u+'\')"><img src="'+u+'" loading="lazy"></div>';
   }).join('')+'</div>';
   if(!lv.length&&!ms.length)html='<div class="empty">暂无内容</div>';
