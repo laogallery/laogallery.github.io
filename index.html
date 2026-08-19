@@ -17,10 +17,10 @@ body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#14161a;c
 .section-title{padding:0 20px;margin:18px 0 12px;font-size:20px;font-weight:700;color:#ffb74d;display:flex;align-items:center;gap:10px}
 .section-title::before{content:"";width:4px;height:20px;background:#ff7043;border-radius:2px}
 .section-title small{font-size:12px;color:#8a9099;font-weight:400}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:0 20px 30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:0 20px 30px;justify-items:center}
 .card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;background:#1e2127;border:1px solid #2c313c}
-.card{display:flex;align-items:center;justify-content:center;padding:4px}
-.card img{width:100%;display:block;aspect-ratio:3/4;object-fit:contain;background:#1e2127;transition:.3s}
+.card{display:flex;align-items:center;justify-content:center;width:100%;background:#1e2127;border-radius:12px;border:1px solid #2c313c;overflow:hidden}
+.card img{display:block;margin:auto;width:100%;height:280px;object-fit:contain;object-position:center center;background:#1e2127;transition:.3s}
 .card:hover img{transform:scale(1.05)}
 .card .cap{position:absolute;left:0;right:0;bottom:0;padding:26px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.85));font-size:12px;color:#fff}
 .empty{grid-column:1/-1;text-align:center;color:#666;padding:40px;font-size:14px}
