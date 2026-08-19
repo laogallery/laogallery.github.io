@@ -134,7 +134,7 @@ function setPw(i){
 function delCat(i){if(!confirm("删除该分类？"))return;data.cats.splice(i,1);save();render();setSt("已删除（点「同步」生效）");}
 function mv(i,dir){var j=i+dir;if(j<0||j>=data.cats.length)return;var t=data.cats[i];data.cats[i]=data.cats[j];data.cats[j]=t;save();render();}
 function openCat(i){cur=i;document.getElementById("curCatN").textContent=data.cats[i].name;document.getElementById("imgCard").style.display="block";renderImgs();}
-function renderImgs(){var b=document.getElementById("imgList");b.innerHTML="";(data.cats[cur].images||[]).forEach(function(im,j){var w=document.createElement("span");w.className="thumb";w.style.position="relative";w.innerHTML='<img src="'+(im.d||im.src)+'" style="width:56px;height:70px;object-fit:cover;border-radius:6px"><button class="x" onclick="delImg('+j+')">×</button>';b.appendChild(w);});}
+function renderImgs(){var b=document.getElementById("imgList");b.innerHTML="";(data.cats[cur].images||[]).forEach(function(im,j){var w=document.createElement("span");w.className="thumb";w.style.position="relative";w.innerHTML='<img src="'+(im.d||(im.src.charAt(0)==="/"?im.src:"/"+im.src))+'" style="width:56px;height:70px;object-fit:cover;border-radius:6px"><button class="x" onclick="delImg('+j+')">×</button>';b.appendChild(w);});}
 function delImg(j){data.cats[cur].images.splice(j,1);save();renderImgs();setSt("已删除（点「同步」生效）");}
 function addPics(){
   var fs=document.getElementById("file").files;if(!fs.length){alert("请选择图片");return;}
@@ -144,7 +144,7 @@ function addPics(){
     var f=arr[done],r=new FileReader();
     r.onload=function(e){var img=new Image();
       img.onload=function(){var max=900,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);
-        var file="media/img_"+t0+"_"+done+".jpg";
+        var file="/media/img_"+t0+"_"+done+".jpg";
         data.cats[cur].images.push({src:file,d:c.toDataURL("image/jpeg",0.55),title:""});
         done++;next();};
       img.src=e.target.result;};
@@ -175,12 +175,12 @@ function sync(){
   // 1) 先上传所有新图片（data URL → media 文件）
   var tasks=[],n=0;
   data.cats.forEach(function(c){c.images.forEach(function(im){
-    if(im.d&&im.src.indexOf("media/")===0){tasks.push({p:im.src,c:im.d});im.d="";}
+    if(im.d&&im.src.indexOf("media/")>=0){im.src=im.src.charAt(0)==="/"?im.src:"/"+im.src;tasks.push({p:im.src,c:im.d});im.d="";}
   });});
   var up=function(i){
     if(i>=tasks.length)return Promise.resolve({bad:[]});
     var t=tasks[i];
-    return ghPut("/"+t.p,t.c,1).then(function(r){
+    return ghPut("/"+t.p.replace(/^\//,""),t.c,1).then(function(r){
       if(!r.ok)return up(i+1).then(function(x){x.bad.push(t.p+"("+r.code+")");return x;});
       return up(i+1);
     });
@@ -194,7 +194,7 @@ function sync(){
       ghPut("/content/index.json",JSON.stringify(clean,null,0),1)
     ]).then(function(rr){
       var ok1=rr[0].ok,ok2=rr[1].ok,msg="";
-      if(ok1&&ok2){save();setSt("✅ 同步成功！前台20秒内自动更新");alert("✅ 已同步到网站，前台马上更新");}
+      if(ok1&&ok2){save();if(cur>=0)renderImgs();setSt("✅ 同步成功！前台20秒内自动更新");alert("✅ 已同步到网站，前台马上更新");}
       else{
         if(res.bad.length)msg="\n图片失败: "+res.bad.slice(0,3).join("; ");
         var why=!ok1?("设置"+rr[0].code):("数据"+rr[1].code);
