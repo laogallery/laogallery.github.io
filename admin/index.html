@@ -31,7 +31,7 @@ textarea{min-height:70px;resize:vertical}
   <p class="sub" style="text-align:center">内容存储在 GitHub 云端 · 全网可见</p>
   <label>GitHub 访问令牌 (Token)</label>
   <input type="password" id="tok" placeholder="ghp_..." style="margin-bottom:10px">
-  <label>管理密码（默认 admin888，可改）</label>
+  <label>管理密码（密码由站长设置）</label>
   <input type="password" id="pw" placeholder="admin888" style="margin-bottom:14px">
   <button class="btn" style="width:100%;text-align:center" onclick="login()">登录</button>
   <div class="hint">Token 在 github.com → Settings → Developer settings → Personal access tokens 生成（勾选 repo），只存你本机浏览器，安全。</div>
@@ -73,7 +73,7 @@ textarea{min-height:70px;resize:vertical}
 </div>
 
 <script>
-var TOKEN="", ADMIN_PW="admin888";
+var TOKEN="", ADMIN_PW="hoyo2010";
 var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
 var cats=[], settings={siteTitle:"图片画廊",siteDesc:"分类浏览 · 点击查看大图"}, curCat=-1;
 function ghFetch(path, opts){opts=opts||{};opts.headers=Object.assign({"Authorization":"token "+TOKEN,"Accept":"application/vnd.github+json","User-Agent":"gallery-admin","Content-Type":"application/json"},opts.headers||{});return fetch(API+path,opts);}
