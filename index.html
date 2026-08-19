@@ -54,11 +54,12 @@ function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function node(){var n=cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
 function cur(){var n=cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n[nav[nav.length-1]];}
 function setDiag(c){var t={c:0,m:0};function walk(a){a.forEach(function(x){t.c++;t.m+=(x.media||[]).length;walk(x.children||[]);});}walk(c||cats);document.getElementById("diag").textContent="共 "+t.c+" 个分类 / "+t.m+" 个媒体 · "+new Date().toLocaleTimeString();}
+function mig(x){if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}x.media=x.media||[];x.children=(x.children||[]).map(mig);return x;}
 function load(){
   Promise.all([
     fetch("content/settings.json?t="+Date.now()).then(r=>r.json()).catch(()=>st),
     fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>[])
-  ]).then(function(a){st=a[0];cats=a[1];render();setDiag();});
+  ]).then(function(a){st=a[0];cats=(a[1]||[]).map(mig);render();setDiag();});
 }
 function absUrl(s){if(!s)return "";if(s.indexOf("http")===0)return s;return "https://laogallery.github.io/"+s.replace(/^\//,"");}
 function render(){
@@ -122,7 +123,7 @@ function imFail(el){el.parentNode.innerHTML='<div class="cnt" style="padding:20p
 load();
 setInterval(function(){
   fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>null).then(function(d){
-    if(d&&JSON.stringify(d)!==JSON.stringify(cats)){cats=d;render();if(nav.length&&!cur())go([]);setDiag();}
+    if(d&&JSON.stringify(d)!==JSON.stringify(cats)){cats=d.map(mig);render();if(nav.length&&!cur())go([]);setDiag();}
   });
 },20000);
 </script>
