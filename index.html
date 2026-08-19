@@ -84,12 +84,16 @@ function showCat(i){
   document.getElementById("back").style.display="inline-block";
   var v=document.getElementById("v");
   if(!imgs.length){v.innerHTML='<div class="empty">暂无课表图片</div>';return;}
-  v.innerHTML='<div class="pics">'+imgs.map(function(im,j){
-    return '<div class="pic" onclick="lb(\''+im.src.replace(/'/g,"\\'")+'\')"><img src="'+im.src+'" loading="lazy"></div>';
+    v.innerHTML='<div class="pics">'+imgs.map(function(im,j){
+    var u=absUrl(im.src);
+    return '<div class="pic" onclick="lb(\''+u.replace(/'/g,"\\'")+'\')"><img src="'+u+'" loading="lazy" data-s="'+u+'" onerror="imFail(this)"></div>';
+  }).join('')+'</div>';
   }).join('')+'</div>';
   window.scrollTo(0,0);
 }
-function lb(src){document.getElementById("bi").src=src;document.getElementById("bc").textContent="";document.getElementById("lb").style.display="flex";}
+function absUrl(s){if(!s)return "";if(s.indexOf("http")===0)return s;return "https://laogallery.github.io/"+s.replace(/^\//,"");}
+function lb(src){document.getElementById("bi").src=absUrl(src);document.getElementById("bc").textContent="";document.getElementById("lb").style.display="flex";}
+function imFail(el){el.parentNode.innerHTML='<div class="cnt" style="padding:20px;text-align:center;color:#e33">图片加载失败<br><span style="font-size:10px;word-break:break-all">'+el.getAttribute("data-s")+'</span></div>';}
 load();
 setInterval(function(){
   fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>null).then(d=>{
