@@ -66,9 +66,7 @@ input{width:100%;padding:9px 10px;border:1px solid #d5d9e0;border-radius:8px;fon
   </div>
 
   <div class="card">
-    <h2>🖼️ 媒体上传与管理</h2>
-    <label style="font-size:12px;color:#555">📂 上传到哪个分类（支持选择任意层级）：</label>
-    <select id="catSel" style="width:100%;padding:10px;border:1px solid #d5d9e0;border-radius:8px;font-size:14px;margin:6px 0 10px"></select>
+    <h2 id="mh">🖼️ 媒体（当前文件夹）</h2>
     <input type="file" id="file" accept="image/*,video/*" multiple>
     <button class="btn g" onclick="addFiles()">⬆️ 上传所选（图/视频）</button>
     <div id="mediaList" class="media"></div>
@@ -82,28 +80,17 @@ input{width:100%;padding:9px 10px;border:1px solid #d5d9e0;border-radius:8px;fon
 </div>
 
 <script>
-var DATA_KEY="gd_v4",TOKEN="",PW="hoyo2010",data={siteTitle:"最新课表展示",siteDesc:"点击分类查看课表",cats:[]},nav=[],cur=-1,sel=[];
+var DATA_KEY="gd_v4",TOKEN="",PW="hoyo2010",data={siteTitle:"最新课表展示",siteDesc:"点击分类查看课表",cats:[]},nav=[],cur=-1;
 var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function level(){var n=data.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
 function curNode(){var n=data.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n[nav[nav.length-1]];}
-function selNode(){var n=data.cats;for(var i=0;i<sel.length;i++)n=n[sel[i]].children||[];return n[sel[sel.length-1]];}
-function treePaths(){var out=[];function walk(a,path,label){a.forEach(function(c,i){var p2=path.concat([i]);out.push({p:p2,l:label?label+" / "+c.name:c.name,n:c});walk(c.children||[],p2,label?label+" / "+c.name:c.name);});}walk(data.cats,[],"");
-  if(!out.length)out.push({p:[],l:"（暂无分类，请先在分类管理添加）",n:null});
-  return out;}
-function renderCatSel(){
-  var paths=treePaths(),selEl=document.getElementById("catSel");
-  var mark=sel.length?JSON.stringify(sel):"";
-  selEl.innerHTML=paths.map(function(t){return '<option value="'+JSON.stringify(t.p)+'">'+esc(t.l)+'</option>';}).join("");
-  if(mark){try{paths.forEach(function(t,i){if(JSON.stringify(t.p)===mark)selEl.selectedIndex=i;});}catch(e){}}
-  renderMediaBox();
-}
 function saveLocal(){
   // 视频d不落localStorage（太大）
   var copy=JSON.parse(JSON.stringify(data));
   (function walk(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){if(m.t==="vid")return {t:m.t,s:m.s};return {t:m.t,s:m.s,d:m.d||undefined};});walk(x.children||[]);});})(copy.cats);
   delete copy._mem;
-  try{localStorage.setItem(DATA_KEY,JSON.stringify(copy));}catch(e){alert("⚠️ 本地存储已满，图片请压缩后重传或及时同步");}
+  try{localStorage.setItem(DATA_KEY,JSON.stringify(copy));}catch(e){console.log("ls full");}
 }
 function load(){try{var s=localStorage.getItem(DATA_KEY);if(s){var d=JSON.parse(s);if(d.cats)data=d;}}catch(e){}}
 function login(){
@@ -128,7 +115,7 @@ function loadCloud(){
   Promise.all([
     gh("/content/settings.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var s=JSON.parse(db64(j.content));data.siteTitle=s.siteTitle||data.siteTitle;data.siteDesc=s.siteDesc||data.siteDesc;}}).catch(()=>{}),
     gh("/content/index.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var c=JSON.parse(db64(j.content));c=c.map(function(x){return migrate(x);});data.cats=c;}}).catch(()=>{})
-  ]).then(function(){saveLocal();render();if(!sel.length&&data.cats.length)sel=[0];setSt("✅ 已读取云端数据");});
+  ]).then(function(){saveLocal();render();setSt("✅ 已读取云端数据");});
 }
 function migrate(x){
   // 兼容旧数据 images → media
@@ -164,8 +151,11 @@ function render(){
 }
 function renderMediaBox(){
   var ml=document.getElementById("mediaList");if(!ml)return;
-  var mc=sel.length?selNode().media:[];
-  if(!sel.length||!mc||!mc.length){ml.innerHTML='<div class="tip">'+(sel.length?'该分类还没有媒体':'请先在上方选择分类再上传/管理媒体')+'</div>';}
+  var folderName=nav.length?(curNode()?curNode().name:"?"):"（根目录·只放分类）";
+  var mh=document.getElementById("mh");if(mh)mh.textContent="🖼️ 媒体（当前文件夹："+folderName+"）";
+  if(!nav.length){ml.innerHTML='<div class="tip">📂 先在「分类管理」点某分类的 📂 打开文件夹，再在这里上传图片/视频</div>';return;}
+  var mc=curNode().media;
+  if(!mc||!mc.length){ml.innerHTML='<div class="tip">该文件夹还没有媒体，选好图片/视频点上传即可</div>';}
   (mc||[]).forEach(function(m,j){
     var w=document.createElement("div");w.className="mitem";
     var src=m.d||m.s;
@@ -175,7 +165,6 @@ function renderMediaBox(){
   });
 }
 function go(p){nav=p;render();}
-document.addEventListener("change",function(ev){if(ev.target&&ev.target.id==="catSel"){try{sel=JSON.parse(ev.target.value);}catch(e){sel=[];}renderMediaBox();}});
 function goInto(i){if(nav.length>=2){alert("最多三级分类");return;}nav=nav.concat([i]);render();}
 function addCat(){
   var n=document.getElementById("newName").value.trim();if(!n){alert("请输入分类名");return;}
@@ -199,11 +188,11 @@ function setPw(i){
   if(p2!==p){alert("两次输入不一致");return;}
   sha256(p).then(function(h){c.pwHash=h;saveLocal();render();setSt("✅ 密码已设置（点「同步」生效）");});
 }
-function delM(j){selNode().media.splice(j,1);saveLocal();render();setSt("已删除（点「同步」生效）");}
+function delM(j){curNode().media.splice(j,1);saveLocal();render();setSt("已删除（点「同步」生效）");}
 function addFiles(){
   var fs=document.getElementById("file").files;if(!fs.length){alert("请选择文件");return;}
   var arr=Array.from(fs),done=0,t0=Date.now();
-  if(!sel.length){alert("请先在上方选择要上传到的分类");document.getElementById("file").value="";return;}
+  if(!nav.length){alert("请先点分类行的 📂 打开一个文件夹，再上传");document.getElementById("file").value="";return;}
   (function next(){
     if(done>=arr.length){saveLocal();render();document.getElementById("file").value="";setSt("已添加 "+arr.length+" 个（点「同步」生效）");return;}
     var f=arr[done];
@@ -213,7 +202,7 @@ function addFiles(){
       r.onload=function(e){
         var ext=f.name.split(".").pop().toLowerCase()||"mp4";
         var file="/media/v_"+t0+"_"+done+"."+ext;
-        selNode().media.push({t:"vid",s:file,d:e.target.result});
+        curNode().media.push({t:"vid",s:file,d:e.target.result});
         done++;next();
       };
       r.readAsDataURL(f);
@@ -222,7 +211,7 @@ function addFiles(){
       r2.onload=function(e){var img=new Image();
         img.onload=function(){var max=900,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);
           var file="/media/img_"+t0+"_"+done+".jpg";
-          selNode().media.push({t:"img",s:file,d:c.toDataURL("image/jpeg",0.55)});
+          curNode().media.push({t:"img",s:file,d:c.toDataURL("image/jpeg",0.55)});
           done++;next();};
         img.src=e.target.result;};
       r2.readAsDataURL(f);
