@@ -58,11 +58,25 @@ function home(){
   var v=document.getElementById("v");
   if(!cats.length){v.innerHTML='<div class="empty">暂无分类</div>';return;}
   v.innerHTML='<div class="folders">'+cats.map(function(c,i){
-    return '<div class="folder" onclick="openCat('+i+')"><span class="ic">📁</span><div class="nm">'+esc(c.name)+'</div><div class="cnt">'+(c.images?c.images.length:0)+' 张</div></div>';
+    return '<div class="folder" onclick="openCat('+i+')"><span class="ic">'+(c.pwHash?'🔒':'📁')+'</span><div class="nm">'+esc(c.name)+'</div><div class="cnt">'+(c.images?c.images.length:0)+' 张'+(c.pwHash?' · 密码':'')+'</div></div>';
   }).join('')+'</div>';
 }
+function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
 function openCat(i){
   var c=cats[i],imgs=c.images||[];
+  if(c.pwHash){
+    var p=prompt("🔒 该分类需要密码才能打开\n请输入密码：");
+    if(p==null)return;
+    sha256(p).then(function(h){
+      if(h!==c.pwHash){alert("❌ 密码错误");return;}
+      showCat(c);
+    });
+    return;
+  }
+  showCat(c);
+}
+function showCat(c){
+  var imgs=c.images||[];
   document.getElementById("t").textContent=c.name;
   document.getElementById("s").textContent=c.desc||"";
   document.getElementById("back").style.display="inline-block";
