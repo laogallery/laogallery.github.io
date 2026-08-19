@@ -136,17 +136,23 @@ function mk(){
 }
 function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
 function openT(){
-  var sel=prompt("输入目标分类编号：\n"+listTree()+"\n（直接输入路径，如：0/1）");
-  if(!sel)return;
-  var p=sel.split("/").filter(function(x){return x!=="";}).map(Number);
-  if(!p.length||isNaN(p[0])){alert("格式不对，如 0/1");return;}
-  var n=D.cats,ok=true;
-  for(var i=0;i<p.length;i++){if(!n[p[i]]){ok=false;break;}if(i<p.length-1)n=n[p[i]].children||[];}
-  if(!ok){alert("路径不存在");return;}
-  target=p;document.getElementById("target").textContent="📂 "+pathName(p);sh2();
+  var box=document.createElement("div");box.id="pickBox";box.style.cssText="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;display:flex;align-items:center;justify-content:center";
+  var card=document.createElement("div");card.style.cssText="background:#fff;border-radius:14px;max-height:75%;width:92%;max-width:420px;overflow-y:auto;padding:18px";
+  card.innerHTML='<div style="font-size:16px;font-weight:800;color:#1e3a8a;margin-bottom:10px">📂 选择目标文件夹</div>';
+  var cnt=0;
+  (function w(a,path,label){a.forEach(function(c,i){
+    var p2=path.concat([i]);var lab=label?label+" / "+c.name:c.name;
+    var row=document.createElement("div");row.style.cssText="padding:13px 10px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;cursor:pointer";
+    row.innerHTML='<span style="font-size:15px">'+(c.pwHash?"🔒 ":"📁 ")+esc(lab)+'</span><span style="color:#94a3b8;font-size:12px">'+(c.media||[]).length+'</span>';
+    row.onclick=function(){target=p2;document.getElementById("target").textContent="📂 "+pathName(p2);document.body.removeChild(box);sh2();};
+    card.appendChild(row);cnt++;
+    w(c.children||[],p2,lab);
+  });})(D.cats,[],"");
+  if(!cnt)card.innerHTML+='<div class="tip" style="padding:10px">还没有分类，先回去新建一个</div>';
+  var close=document.createElement("button");close.style.cssText="margin-top:12px;width:100%;padding:11px;border:none;background:#f1f5f9;border-radius:10px;font-size:14px;cursor:pointer";
+  close.textContent="取消";close.onclick=function(){document.body.removeChild(box);};
+  card.appendChild(close);box.appendChild(card);document.body.appendChild(box);
 }
-function listTree(){var out=[];function w(a,path,label){a.forEach(function(c,i){var p2=path.concat([i]);out.push(p2.join("/")+" = "+c.name);w(c.children||[],p2,c.name);});}w(D.cats,[],"");
-  if(!out.length)return"（还没有分类）";return out.join("\n");}
 function sh2(){
   document.getElementById("target").textContent=target===null?"📂 选择目标文件夹":"📂 "+pathName(target);
   var pv=document.getElementById("pv");pv.innerHTML="";
