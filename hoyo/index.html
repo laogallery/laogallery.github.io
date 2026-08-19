@@ -3,206 +3,147 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>画廊管理后台</title>
+<title>课表管理</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f7;color:#2b2f36;padding:20px;max-width:980px;margin:0 auto}
-h1{font-size:24px;color:#1f2937;margin-bottom:4px}
-.sub{color:#888;font-size:13px;margin-bottom:20px}
-.card{background:#fff;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.card h2{font-size:17px;margin-bottom:14px;color:#333;border-left:4px solid #ff7043;padding-left:10px}
-label{display:block;font-size:13px;color:#555;margin:10px 0 4px}
-input[type=text],input[type=password],textarea{width:100%;padding:10px 12px;border:1px solid #d5d9e0;border-radius:8px;font-size:14px}
-textarea{min-height:70px;resize:vertical}
-.btn{display:inline-block;background:#ff7043;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:14px;cursor:pointer;margin-right:8px}
-.btn.gray{background:#6b7280}.btn.green{background:#10b981}.btn.red{background:#dc2626}
-.cat-item{background:#f8f9fb;border:1px solid #e5e8ee;border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.img-thumb{width:56px;height:70px;object-fit:cover;border-radius:6px;margin:4px;cursor:pointer}
-#loginBox{max-width:420px;margin:60px auto;background:#fff;border-radius:16px;padding:34px;box-shadow:0 4px 24px rgba(0,0,0,.1)}
-.hint{background:#fff7e6;border-radius:8px;padding:10px 12px;font-size:12px;color:#8a6d1a;margin:10px 0;line-height:1.8}
-.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.inline-img{display:inline-block;position:relative}
-.inline-img button{position:absolute;top:-6px;right:-6px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f7;color:#2b2f36;padding:16px;max-width:800px;margin:0 auto}
+h1{font-size:22px;margin-bottom:4px}
+.sub{color:#888;font-size:12px;margin-bottom:16px}
+.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.card h2{font-size:16px;margin-bottom:10px;border-left:4px solid #ff7043;padding-left:8px}
+label{display:block;font-size:12px;color:#555;margin:8px 0 3px}
+input{width:100%;padding:9px 10px;border:1px solid #d5d9e0;border-radius:8px;font-size:14px;box-sizing:border-box}
+.btn{display:inline-block;background:#ff7043;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:14px;cursor:pointer;margin:6px 4px 0 0}
+.btn.g{background:#6b7280}.btn.r{background:#dc2626}.btn.b{background:#10b981}
+.cat{background:#f8f9fb;border:1px solid #e5e8ee;border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.cat .top{display:flex;justify-content:space-between;align-items:center}
+.cat .nm{font-weight:700}
+.cat .cnt{color:#999;font-size:12px}
+.sm{padding:5px 10px !important;font-size:12px !important;margin:2px 0 0 4px}
+.imgs{margin-top:8px}
+.thumb{width:52px;height:65px;object-fit:cover;border-radius:6px;margin:3px;position:relative;display:inline-block;vertical-align:top}
+.thumb .x{position:absolute;top:-5px;right:-5px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer}
+textarea{width:100%;height:90px;border:1px solid #d5d9e0;border-radius:8px;font-size:11px;padding:8px;box-sizing:border-box}
+.tip{font-size:11px;color:#999;margin-top:6px;line-height:1.7}
+.pub{background:#fff7e6;border-radius:10px;padding:12px;margin-top:10px;border:1px solid #ffe1a8;font-size:12px;line-height:1.8;color:#8a6d1a}
 </style>
 </head>
 <body>
-<div id="loginBox">
-  <h1 style="text-align:center">🔐 画廊管理后台</h1>
-  <p class="sub" style="text-align:center">内容存储在 GitHub 云端 · 全网可见</p>
-  <label>GitHub 访问令牌 (Token)</label>
-  <input type="password" id="tok" placeholder="你的GitHubToken..." style="margin-bottom:10px">
-  <label>管理密码（密码由站长设置）</label>
-  <input type="password" id="pw" placeholder="admin888" style="margin-bottom:14px">
-  <button class="btn" style="width:100%;text-align:center" onclick="login()">登录</button>
-  <div class="hint">Token 在 github.com → Settings → Developer settings → Personal access tokens 生成（勾选 repo），只存你本机浏览器，安全。</div>
+<h1>📚 课表管理（极简版）</h1>
+<p class="sub">本地编辑 → 点「发布」→ 把内容发我 → 我上线，前台自动更新</p>
+
+<div class="card">
+  <h2>⚙️ 网站名称</h2>
+  <label>标题</label><input id="siteTitle" placeholder="最新课表展示">
+  <label>副标题</label><input id="siteDesc" placeholder="点击分类文件夹查看课表">
+  <button class="btn b" onclick="saveSite()">💾 保存</button>
 </div>
 
-<div id="admin" style="display:none">
-  <div class="bar">
-    <div><h1>🖼️ 画廊管理后台</h1><p class="sub">修改保存后 → 刷新前台即更新（数据存 GitHub 云端，全网可见）</p></div>
-    <div><button class="btn gray" onclick="location.href='../'">🏠 打开前台</button> <button class="btn red" onclick="logout()">退出</button></div>
+<div class="card">
+  <h2>📁 分类管理</h2>
+  <div style="display:flex;gap:6px">
+    <input id="newName" placeholder="分类名（如：高三课表）" style="flex:2">
+    <input id="newDesc" placeholder="描述(可选)" style="flex:2">
+    <button class="btn" onclick="addCat()">➕</button>
   </div>
+  <div id="catList" style="margin-top:10px"></div>
+</div>
 
-  <div class="card">
-    <h2>⚙️ 网站设置</h2>
-    <label>网站标题</label><input type="text" id="siteTitle">
-    <label>网站描述</label><input type="text" id="siteDesc">
-    <div style="margin-top:12px"><button class="btn green" onclick="saveSettings()">💾 保存设置</button><span id="st1" style="color:#999;font-size:13px;margin-left:10px"></span></div>
-  </div>
+<div class="card" id="imgCard" style="display:none">
+  <h2>🖼️ 图片：<span id="curCatN"></span></h2>
+  <input type="file" id="file" accept="image/*" multiple>
+  <button class="btn g" onclick="addPics()">⬆️ 添加所选图片</button>
+  <div id="imgList" class="imgs"></div>
+</div>
 
-  <div class="card">
-    <h2>📁 分类管理</h2>
-    <div style="display:flex;gap:10px;margin-bottom:12px">
-      <input type="text" id="newCatName" placeholder="分类名称" style="flex:1">
-      <input type="text" id="newCatDesc" placeholder="分类描述(可选)" style="flex:1">
-      <button class="btn" onclick="addCat()">➕ 添加分类</button>
-    </div>
-    <div id="catList"></div>
-  </div>
-
-  <div class="card" id="imgCard" style="display:none">
-    <h2>🖼️ 图片管理：<span id="curCat"></span> <span style="font-size:12px;color:#999" id="imgCount"></span></h2>
-    <input type="file" id="fileInput" accept="image/*" multiple style="margin:8px 0">
-    <div style="margin-top:8px">
-      <button class="btn" onclick="uploadPics()">⬆️ 上传图片到云端</button>
-      <span id="upSt" style="color:#999;font-size:13px;margin-left:10px"></span>
-    </div>
-    <div class="hint" style="margin-top:8px">图片上传后存入仓库 media/ 文件夹，生成永久链接（全网可访问）。单张建议 &lt;2MB。</div>
-    <div id="imgList" style="margin-top:14px"></div>
+<div class="card">
+  <h2>📤 发布到网站</h2>
+  <button class="btn" onclick="genPublish()">📤 生成发布内容</button>
+  <div id="pubBox" style="display:none;margin-top:10px">
+    <textarea id="pubText" readonly></textarea>
+    <div class="pub">① 点「复制」② 把内容粘贴发给我（或下载文件发我）③ 我上线后前台自动更新 ✅</div>
+    <button class="btn g" onclick="copyPub()">📋 复制</button>
+    <button class="btn g" onclick="downPub()">⬇️ 下载文件</button>
   </div>
 </div>
 
 <script>
-var TOKEN="", ADMIN_PW="hoyo2010";
-var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
-var cats=[], settings={siteTitle:"图片画廊",siteDesc:"分类浏览 · 点击查看大图"}, curCat=-1;
-function ghFetch(path, opts){opts=opts||{};opts.headers=Object.assign({"Authorization":"token "+TOKEN,"Accept":"application/vnd.github+json","User-Agent":"gallery-admin","Content-Type":"application/json"},opts.headers||{});return fetch(API+path,opts);}
-function b64u(s){return btoa(unescape(encodeURIComponent(s)));}
-function db64(s){return decodeURIComponent(escape(atob(s)));}
-
-function toast(el,msg){if(document.getElementById(el))document.getElementById(el).textContent=msg;setTimeout(function(){if(document.getElementById(el))document.getElementById(el).textContent="";},2500);}
-
-function login(){
-  var t=document.getElementById("tok").value.trim();
-  var p=document.getElementById("pw").value||"admin888";
-  if(p!==ADMIN_PW){alert("管理密码错误");return;}
-  if(!t){alert("请输入 GitHub Token");return;}
-  TOKEN=t;
-  // 验证 token
-  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"gallery-admin"}})
-  .then(function(r){if(!r.ok)throw new Error("Token 无效");return r.json();})
-  .then(function(u){
-    if(u.login!=="laogallery"){alert("Token 不属于 laogallery 账号");return;}
-    alert("✅ 登录成功");
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("admin").style.display="block";
-    localStorage.setItem("gallery_gh_token",t);
-    TOKEN=t;loadAll();
-  }).catch(function(e){alert("Token 无效或网络错误");});
-}
-function logout(){localStorage.removeItem("gallery_gh_token");location.reload();}
-
-function loadAll(){
-  return Promise.all([
-    ghFetch("/content/settings.json?cache="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){settings=db64(JSON.parse(j).content);}).catch(function(){settings={siteTitle:"图片画廊",siteDesc:"分类浏览 · 点击查看大图"};}),
-    ghFetch("/content/index.json?cache="+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){cats=JSON.parse(db64(JSON.parse(j).content));}).catch(function(){cats=[];})
-  ]).then(function(){
-    document.getElementById("siteTitle").value=settings.siteTitle||"";
-    document.getElementById("siteDesc").value=settings.siteDesc||"";
-    renderCats();
-    if(!TOKEN||cats.length===0){setTimeout(function(){alert("⚠️ 未读取到云端数据：请确认登录时已填写 GitHub Token（密码+Token都要填）");},300);}
-  });
-}
-function saveSettings(){
-  if(!TOKEN){alert("⚠️ 未登录或Token为空\n请重新登录：\nToken: 你的GitHubToken\n密码: hoyo2010");return;}
-  settings.siteTitle=document.getElementById("siteTitle").value;
-  settings.siteDesc=document.getElementById("siteDesc").value;
-  putFile("/content/settings.json",JSON.stringify(settings,null,1),"更新网站设置").then(function(ok){if(ok)alert("✅ 标题已保存，刷新前台生效");else alert("❌ 保存失败：Token 可能失效，请清缓存重新登录（输入 Token）");});
-}
-function renderCats(){
-  var box=document.getElementById("catList");box.innerHTML="";
-  cats.forEach(function(c,i){
-    var it=document.createElement("div");it.className="cat-item";
-    it.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><div><b>'+esc(c.name)+'</b> <span style="color:#999;font-size:12px">'+esc(c.desc||"")+' · '+((c.images&&c.images.length)||0)+' 张</span></div><div><button class="btn" style="padding:6px 14px;font-size:13px" onclick="openCat('+i+')">📷 管理图片</button> <button class="btn gray" style="padding:6px 14px;font-size:13px" onclick="editCat('+i+')">✏️ 改名</button> <button class="btn gray" style="padding:6px 14px;font-size:13px" onclick="moveCat('+i+','+(-1)+')">↑</button> <button class="btn gray" style="padding:6px 14px;font-size:13px" onclick="moveCat('+i+','+1+')">↓</button> <button class="btn red" style="padding:6px 14px;font-size:13px" onclick="delCat('+i+')">🗑️</button></div></div>';
-    box.appendChild(it);
-  });
-}
+var KEY="gallery_v2";
+var data={siteTitle:"最新课表展示",siteDesc:"点击分类文件夹查看课表",cats:[]},cur=-1;
+function load(){try{var s=localStorage.getItem(KEY);data=s?JSON.parse(s):data;}catch(e){data={siteTitle:"最新课表展示",siteDesc:"点击分类文件夹查看课表",cats:[]};}}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));}
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
-function addCat(){
-  var n=document.getElementById("newCatName").value.trim();if(!n){alert("请输入名称");return;}
-  cats.push({name:n,desc:document.getElementById("newCatDesc").value.trim(),images:[]});
-  putFile("/content/index.json",JSON.stringify(cats,null,1),"添加分类: "+n).then(function(ok){if(ok){toast2();document.getElementById("newCatName").value="";document.getElementById("newCatDesc").value="";renderCats();}else alert("保存失败");});
-}
-function toast2(){}function toast3(){}
-function delCat(i){if(!confirm("删除分类 "+cats[i].name+"？"))return;cats.splice(i,1);putFile("/content/index.json",JSON.stringify(cats,null,1),"删除分类").then(function(ok){if(ok)renderCats();});}
-function editCat(i){
-  var nn=prompt("分类名称",cats[i].name);if(nn==null)return;
-  var nd=prompt("分类描述",cats[i].desc||"");if(nd==null)return;
-  cats[i].name=nn;cats[i].desc=nd;
-  putFile("/content/index.json",JSON.stringify(cats,null,1),"修改分类").then(function(ok){if(ok)renderCats();});
-}
-function moveCat(i,dir){var j=i+dir;if(j<0||j>=cats.length)return;var t=cats[i];cats[i]=cats[j];cats[j]=t;putFile("/content/index.json",JSON.stringify(cats,null,1),"排序").then(function(ok){if(ok)renderCats();});}
-function openCat(i){curCat=i;document.getElementById("curCat").textContent=cats[i].name;document.getElementById("imgCard").style.display="block";renderImgs();document.getElementById("imgCard").scrollIntoView({behavior:"smooth"});}
-function renderImgs(){
-  if(curCat<0)return;
-  var box=document.getElementById("imgList");box.innerHTML="";
-  var imgs=cats[curCat].images||[];
-  document.getElementById("imgCount").textContent="共 "+imgs.length+" 张";
-  imgs.forEach(function(im,j){
-    var w=document.createElement("span");w.className="inline-img";
-    w.innerHTML='<img src="'+im.src+'" class="img-thumb" onclick="window.open(this.src)"><button onclick="delImg('+j+')">×</button>';
-    box.appendChild(w);
+function render(){
+  document.getElementById("siteTitle").value=data.siteTitle;
+  document.getElementById("siteDesc").value=data.siteDesc;
+  var b=document.getElementById("catList");b.innerHTML="";
+  if(!data.cats.length){b.innerHTML='<div class="tip" style="padding:8px">还没有分类，先添加一个吧</div>';}
+  data.cats.forEach(function(c,i){
+    var d=document.createElement("div");d.className="cat";
+    d.innerHTML='<div class="top"><div><span class="nm">'+esc(c.name)+'</span> <span class="cnt">'+(c.images?c.images.length:0)+' 张</span></div><div><button class="btn sm g" onclick="openCat('+i+')">📷 图</button><button class="btn sm g" onclick="editCat('+i+')">✏️</button><button class="btn sm g" onclick="moveCat('+i+',-1)">↑</button><button class="btn sm g" onclick="moveCat('+i+',1)">↓</button><button class="btn sm r" onclick="delCat('+i+')">🗑️</button></div></div>';
+    b.appendChild(d);
   });
 }
-function delImg(j){if(!confirm("删除这张图片？"))return;cats[curCat].images.splice(j,1);putFile("/content/index.json",JSON.stringify(cats,null,1),"删除图片").then(function(ok){if(ok)renderImgs();});}
-function uploadPics(){
-  var files=document.getElementById("fileInput").files;
-  if(!files.length){alert("请先选择图片");return;}
-  document.getElementById("upSt").textContent="上传中...";
-  var arr=Array.from(files).filter(function(f){return f.type.startsWith("image/");});
+function saveSite(){data.siteTitle=document.getElementById("siteTitle").value;data.siteDesc=document.getElementById("siteDesc").value;save();alert("✅ 已保存");}
+function addCat(){
+  var n=document.getElementById("newName").value.trim();if(!n){alert("请输入分类名");return;}
+  data.cats.push({name:n,desc:document.getElementById("newDesc").value.trim(),images:[]});
+  document.getElementById("newName").value="";document.getElementById("newDesc").value="";
+  save();render();alert("✅ 已添加分类（别忘了最后点「发布」）");
+}
+function editCat(i){var n=prompt("分类名",data.cats[i].name);if(n==null)return;var d=prompt("描述",data.cats[i].desc||"");if(d==null)return;data.cats[i].name=n;data.cats[i].desc=d;save();render();}
+function delCat(i){if(!confirm("删除该分类？"))return;data.cats.splice(i,1);if(cur===i){cur=-1;document.getElementById("imgCard").style.display="none";}save();render();}
+function moveCat(i,dir){var j=i+dir;if(j<0||j>=data.cats.length)return;var t=data.cats[i];data.cats[i]=data.cats[j];data.cats[j]=t;save();render();}
+function openCat(i){cur=i;document.getElementById("curCatN").textContent=data.cats[i].name;document.getElementById("imgCard").style.display="block";renderImgs();}
+function renderImgs(){
+  var b=document.getElementById("imgList");b.innerHTML="";
+  (data.cats[cur].images||[]).forEach(function(im,j){
+    var w=document.createElement("span");w.className="thumb";w.style.position="relative";
+    w.innerHTML='<img src="'+im.src+'" style="width:52px;height:65px;object-fit:cover;border-radius:6px"><button class="x" onclick="delImg('+j+')">×</button>';
+    b.appendChild(w);
+  });
+}
+function delImg(j){data.cats[cur].images.splice(j,1);save();renderImgs();}
+function addPics(){
+  var fs=document.getElementById("file").files;if(!fs.length){alert("请选择图片");return;}
+  var arr=Array.from(fs).filter(function(f){return f.type.startsWith("image/");});
   var done=0;
   function next(){
-    if(done>=arr.length){
-      putFile("/content/index.json",JSON.stringify(cats,null,1),"更新图片列表").then(function(ok){
-        document.getElementById("upSt").textContent="✅ 上传完成 "+arr.length+" 张";
-        renderImgs();document.getElementById("fileInput").value="";
-      });
-      return;
-    }
-    var f=arr[done];
-    var r=new FileReader();
+    if(done>=arr.length){save();renderImgs();document.getElementById("file").value="";alert("✅ 已添加 "+arr.length+" 张（别忘了发布）");return;}
+    var f=arr[done],r=new FileReader();
     r.onload=function(e){
-      var b64=e.target.result.split(",")[1];
-      var name="img_"+Date.now()+"_"+done+".jpg";
-      putFile("/media/"+name,b64,"上传图片",false).then(function(ok){
-        if(ok){
-          var src="https://laogallery.github.io/media/"+name;
-          cats[curCat].images.push({src:src,title:f.name.replace(/\.[^.]+$/,"")});
-        }
+      var img=new Image();
+      img.onload=function(){
+        var max=1000,w=img.width,h=img.height;
+        if(w>max){h=h*max/w;w=max;}
+        var c=document.createElement("canvas");c.width=w;c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        var src=c.toDataURL("image/jpeg",0.65);
+        data.cats[cur].images.push({src:src,title:""});
         done++;next();
-      });
+      };
+      img.src=e.target.result;
     };
     r.readAsDataURL(f);
   }
   next();
 }
-function putFile(path,content,msg,isB64){
-  var body={message:msg,content:isB64?content:b64u(content),branch:"main"};
-  // 先查是否存在（拿 sha）
-  return ghFetch(path+"?cache="+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(ex){
-    if(ex&&ex.sha)body.sha=ex.sha;
-    return ghFetch(path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok&&r.status===401)alert("❌ Token 无效或已过期，请清缓存重新登录");return r.ok;}).catch(function(){alert("❌ 保存失败：Token 无效或网络错误");return false;});
-  });
+function genPublish(){
+  document.getElementById("pubText").value=JSON.stringify(data);
+  document.getElementById("pubBox").style.display="block";
+  alert("✅ 发布内容已生成\n点「复制」→ 粘贴发给我");
 }
-
-// 启动
-var t=localStorage.getItem("gallery_gh_token");
-if(t){TOKEN=t;document.getElementById("tok").value=t;
-  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"gallery-admin"}})
-  .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(u){if(u.login==="laogallery"){document.getElementById("loginBox").style.display="none";document.getElementById("admin").style.display="block";loadAll();}})
-  .catch(function(){});
+function copyPub(){
+  var t=document.getElementById("pubText");
+  t.select();document.execCommand("copy");
+  alert("✅ 已复制！请粘贴发给我，我这边上线");
 }
+function downPub(){
+  var blob=new Blob([document.getElementById("pubText").value],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="课表数据.json";a.click();
+  alert("✅ 文件已下载，把它发给我即可");
+}
+load();render();
 </script>
 </body>
 </html>
