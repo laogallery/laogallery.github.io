@@ -64,9 +64,9 @@ input[type=text]{width:100%;padding:15px;border:0;border-bottom:1px solid #f1f5f
 <div class="page" id="pg2">
   <div class="up">
     <button class="tar" id="target" onclick="openT()">选择目标文件夹</button>
-    <div class="plus" onclick="pick()">＋</div>
+    <label for="f" class="plus" id="plusBtn" style="display:flex;align-items:center;justify-content:center;cursor:pointer">＋</label>
     <div class="gray">选择图片或视频</div>
-    <input type="file" id="f" accept="image/*,video/*" multiple style="display:none">
+    <input type="file" id="f" accept="image/*,video/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;left:-200px;top:0">
   </div>
   <div class="pv" id="pv"></div>
   <div style="padding:0 20px">
@@ -190,7 +190,7 @@ function openT(){
   });})(D.cats,[],"");
   document.getElementById("tpick").style.display="flex";
 }
-function pick(){if(target===null){alert("先选目标文件夹");return;}document.getElementById("f").click();}
+document.getElementById("plusBtn").addEventListener("click",function(){if(target===null){alert("请先选择目标文件夹（蓝色按钮）");document.getElementById("f").value="";}});
 function sh2(){
   var pv=document.getElementById("pv");pv.innerHTML="";
   document.getElementById("target").textContent=target===null?"选择目标文件夹":pathName(target);
@@ -212,7 +212,7 @@ function sh2(){
 function rmm(j){nd().media.splice(j,1);sv();sh2();}
 function rmp(j){var it=pend[j];if(it){var mi=nd().media.indexOf(it);if(mi>=0)nd().media.splice(mi,1);}pend.splice(j,1);sv();sh2();}
 document.getElementById("f").onchange=function(){
-  if(target===null){alert("先选目标文件夹");this.value="";return;}
+  if(target===null){alert("请先选择目标文件夹（上传页顶部蓝色按钮）");this.value="";return;}
   var arr=Array.from(this.files),done=0,t0=Date.now();
   (function nx(){
     if(done>=arr.length){sv();sh2();document.getElementById("f").value="";st("已选 "+arr.length+" 个，点保存");return;}
