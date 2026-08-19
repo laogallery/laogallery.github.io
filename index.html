@@ -63,6 +63,7 @@ function loadAll(){
   });
 }
 function renderHome(){
+  currentView="home";currentCat=-1;
   document.getElementById("siteTitle").textContent=settings.siteTitle||"最新课表展示";
   document.getElementById("siteDesc").textContent=settings.siteDesc||"点击分类文件夹查看课表";
   var v=document.getElementById("view");
@@ -76,6 +77,7 @@ function renderHome(){
   v.innerHTML=h;
 }
 function openCat(i){
+  currentView="cat";currentCat=i;
   var c=cats[i];var imgs=c.images||[];
   var v=document.getElementById("view");
   var h='<a class="back" href="javascript:renderHome()">← 返回主页</a>';
@@ -92,7 +94,19 @@ function openCat(i){
   window.scrollTo(0,0);
 }
 function openLightbox(src,title){document.getElementById("lbImg").src=src;document.getElementById("lbCap").textContent=title;document.getElementById("lightbox").style.display="flex";}
-loadAll();
-</script>
+var currentView="home";var currentCat=-1;var lastSig="";
+function sig(d){return JSON.stringify(d||[]).slice(0,4000);}
+function poll(){
+  fetch("content/index.json?t="+Date.now()).then(function(r){return r.json();}).catch(function(){return null;}).then(function(d){
+    if(!d)return;
+    var s=sig(d);
+    if(s!==lastSig){lastSig=s;cats=d;
+      if(currentView==="cat"&&currentCat>=0){openCat(currentCat);}
+      else{renderHome();}
+    }
+  });
+}
+setInterval(poll,20000);poll();
+loadAll();</script>
 </body>
 </html>
