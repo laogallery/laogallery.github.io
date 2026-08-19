@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>图片画廊</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#14161a;color:#e8eaed}
+.top{background:linear-gradient(135deg,#1a1c22,#242833);padding:28px 20px;text-align:center;border-bottom:1px solid #2c313c}
+.top h1{font-size:30px;background:linear-gradient(90deg,#ffb74d,#ff7043);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.top p{color:#9aa0aa;font-size:14px;margin-top:8px}
+.admin-link{position:fixed;right:14px;bottom:14px;background:#242833;border:1px solid #ff7043;color:#ffb74d;padding:8px 14px;border-radius:20px;font-size:12px;text-decoration:none;z-index:50}
+.cats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:16px}
+.cat-tab{padding:8px 20px;border-radius:20px;background:#242833;color:#c8ccd4;cursor:pointer;font-size:14px;border:1px solid #333946;transition:.2s}
+.cat-tab.active{background:#ff7043;color:#fff;border-color:#ff7043}
+.section-title{padding:0 20px;margin:18px 0 12px;font-size:20px;font-weight:700;color:#ffb74d;display:flex;align-items:center;gap:10px}
+.section-title::before{content:"";width:4px;height:20px;background:#ff7043;border-radius:2px}
+.section-title small{font-size:12px;color:#8a9099;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;padding:0 20px 30px}
+.card{position:relative;border-radius:12px;overflow:hidden;cursor:pointer;background:#1e2127;border:1px solid #2c313c}
+.card img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover;transition:.3s}
+.card:hover img{transform:scale(1.05)}
+.card .cap{position:absolute;left:0;right:0;bottom:0;padding:26px 10px 8px;background:linear-gradient(transparent,rgba(0,0,0,.85));font-size:12px;color:#fff}
+.empty{grid-column:1/-1;text-align:center;color:#666;padding:40px;font-size:14px}
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:99;align-items:center;justify-content:center;flex-direction:column}
+#lightbox img{max-width:92%;max-height:82%;border-radius:10px}
+#lightbox .cap{color:#ddd;margin-top:12px;font-size:15px}
+#lightbox .close{position:absolute;top:18px;right:26px;font-size:32px;cursor:pointer;color:#fff}
+.footer{text-align:center;color:#666;font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1 id="siteTitle">图片画廊</h1>
+  <p id="siteDesc">分类浏览 · 点击查看大图</p>
+</div>
+<div class="cats" id="catTabs"></div>
+<div id="sections"></div>
+<div id="lightbox" onclick="this.style.display='none'">
+  <span class="close">×</span>
+  <img id="lbImg" src="">
+  <div class="cap" id="lbCap"></div>
+</div>
+<a class="admin-link" href="./admin/">⚙️ 管理后台</a>
+<div class="footer">laogallery · Powered by GitHub Pages</div>
+<script>
+var cats=[];var settings={siteTitle:"图片画廊",siteDesc:"分类浏览 · 点击查看大图"};
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function loadAll(){
+  return Promise.all([
+    fetch("content/settings.json").then(function(r){return r.json();}).catch(function(){return settings;}),
+    fetch("content/index.json").then(function(r){return r.json();}).catch(function(){return [];})
+  ]).then(function(res){
+    settings=res[0];cats=res[1]||[];
+    render();
+  });
+}
+function render(){
+  document.getElementById("siteTitle").textContent=settings.siteTitle||"图片画廊";
+  document.getElementById("siteDesc").textContent=settings.siteDesc||"分类浏览 · 点击查看大图";
+  var tabs=document.getElementById("catTabs");tabs.innerHTML="";
+  var all=document.createElement("span");
+  all.className="cat-tab active";all.textContent="全部";
+  all.onclick=function(){document.querySelectorAll(".cat-tab").forEach(t=>t.classList.remove("active"));all.classList.add("active");renderSections(null);};
+  tabs.appendChild(all);
+  cats.forEach(function(c,i){
+    var t=document.createElement("span");
+    t.className="cat-tab";t.textContent=c.name+" ("+((c.images&&c.images.length)||0)+")";
+    t.onclick=function(){document.querySelectorAll(".cat-tab").forEach(x=>x.classList.remove("active"));t.classList.add("active");renderSections(i);};
+    tabs.appendChild(t);
+  });
+  renderSections(null);
+}
+function renderSections(only){
+  var box=document.getElementById("sections");box.innerHTML="";
+  if(!cats.length){box.innerHTML='<div class="empty">暂无内容，等待站长发布</div>';return;}
+  cats.forEach(function(c,i){
+    if(only!==null&&only!==i)return;
+    var s=document.createElement("div");
+    var h=document.createElement("div");h.className="section-title";
+    h.innerHTML=esc(c.name)+"<small>"+esc(c.desc||"")+" · "+((c.images&&c.images.length)||0)+" 张</small>";
+    s.appendChild(h);
+    var g=document.createElement("div");g.className="grid";
+    var imgs=(c.images&&c.images.length)?c.images:[];
+    if(!imgs.length){g.innerHTML='<div class="empty">该分类暂无图片</div>';}
+    imgs.forEach(function(im,j){
+      var card=document.createElement("div");card.className="card";
+      card.innerHTML='<img src="'+im.src+'" loading="lazy" alt="'+esc(im.title||"")+'"><div class="cap">'+esc(im.title||"")+"</div>";
+      card.onclick=function(){document.getElementById("lbImg").src=im.src;document.getElementById("lbCap").textContent=im.title||c.name;document.getElementById("lightbox").style.display="flex";};
+      g.appendChild(card);
+    });
+    s.appendChild(g);box.appendChild(s);
+  });
+}
+loadAll();
+</script>
+</body>
+</html>
