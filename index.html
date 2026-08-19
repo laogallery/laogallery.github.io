@@ -88,7 +88,6 @@ function showCat(i){
     var u=absUrl(im.src);
     return '<div class="pic" onclick="lb(\''+u.replace(/'/g,"\\'")+'\')"><img src="'+u+'" loading="lazy" data-s="'+u+'" onerror="imFail(this)"></div>';
   }).join('')+'</div>';
-  }).join('')+'</div>';
   window.scrollTo(0,0);
 }
 function absUrl(s){if(!s)return "";if(s.indexOf("http")===0)return s;return "https://laogallery.github.io/"+s.replace(/^\//,"");}
