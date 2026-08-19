@@ -30,7 +30,7 @@ textarea{min-height:70px;resize:vertical}
   <h1 style="text-align:center">🔐 画廊管理后台</h1>
   <p class="sub" style="text-align:center">内容存储在 GitHub 云端 · 全网可见</p>
   <label>GitHub 访问令牌 (Token)</label>
-  <input type="password" id="tok" placeholder="ghp_..." style="margin-bottom:10px">
+  <input type="password" id="tok" placeholder="你的GitHubToken..." style="margin-bottom:10px">
   <label>管理密码（密码由站长设置）</label>
   <input type="password" id="pw" placeholder="admin888" style="margin-bottom:14px">
   <button class="btn" style="width:100%;text-align:center" onclick="login()">登录</button>
@@ -110,12 +110,14 @@ function loadAll(){
     document.getElementById("siteTitle").value=settings.siteTitle||"";
     document.getElementById("siteDesc").value=settings.siteDesc||"";
     renderCats();
+    if(!TOKEN||cats.length===0){setTimeout(function(){alert("⚠️ 未读取到云端数据：请确认登录时已填写 GitHub Token（密码+Token都要填）");},300);}
   });
 }
 function saveSettings(){
+  if(!TOKEN){alert("⚠️ 未登录或Token为空\n请重新登录：\nToken: 你的GitHubToken\n密码: hoyo2010");return;}
   settings.siteTitle=document.getElementById("siteTitle").value;
   settings.siteDesc=document.getElementById("siteDesc").value;
-  putFile("/content/settings.json",JSON.stringify(settings,null,1),"更新网站设置").then(function(ok){toast("st1",ok?"✅ 已保存，刷新前台生效":"保存失败");});
+  putFile("/content/settings.json",JSON.stringify(settings,null,1),"更新网站设置").then(function(ok){if(ok)alert("✅ 标题已保存，刷新前台生效");else alert("❌ 保存失败：Token 可能失效，请清缓存重新登录（输入 Token）");});
 }
 function renderCats(){
   var box=document.getElementById("catList");box.innerHTML="";
@@ -189,7 +191,7 @@ function putFile(path,content,msg,isB64){
   // 先查是否存在（拿 sha）
   return ghFetch(path+"?cache="+Date.now()).then(function(r){return r.ok?r.json():null;}).then(function(ex){
     if(ex&&ex.sha)body.sha=ex.sha;
-    return ghFetch(path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){return r.ok;}).catch(function(){return false;});
+    return ghFetch(path,{method:"PUT",body:JSON.stringify(body)}).then(function(r){if(!r.ok&&r.status===401)alert("❌ Token 无效或已过期，请清缓存重新登录");return r.ok;}).catch(function(){alert("❌ 保存失败：Token 无效或网络错误");return false;});
   });
 }
 
