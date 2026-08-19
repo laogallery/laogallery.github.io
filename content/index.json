@@ -1,0 +1,56 @@
+[
+ {
+  "name": "老挝风景",
+  "desc": "示例：喀斯特山水与乡村",
+  "images": [
+   {
+    "src": "https://picsum.photos/seed/lao_vang1/600/800",
+    "title": "峰林景观"
+   },
+   {
+    "src": "https://picsum.photos/seed/lao_vang2/600/800",
+    "title": "南松河"
+   },
+   {
+    "src": "https://picsum.photos/seed/lao_vang3/600/800",
+    "title": "稻田夕照"
+   }
+  ]
+ },
+ {
+  "name": "老挝美食",
+  "desc": "示例：东南亚风味",
+  "images": [
+   {
+    "src": "https://picsum.photos/seed/food1/600/800",
+    "title": "老挝烤鱼"
+   },
+   {
+    "src": "https://picsum.photos/seed/food2/600/800",
+    "title": "糯米饭"
+   },
+   {
+    "src": "https://picsum.photos/seed/food3/600/800",
+    "title": "热带水果"
+   }
+  ]
+ },
+ {
+  "name": "旅行随手拍",
+  "desc": "示例：旅途记录",
+  "images": [
+   {
+    "src": "https://picsum.photos/seed/trip1/600/800",
+    "title": "湄公河日落"
+   },
+   {
+    "src": "https://picsum.photos/seed/trip2/600/800",
+    "title": "街角一瞥"
+   },
+   {
+    "src": "https://picsum.photos/seed/trip3/600/800",
+    "title": "夜色灯火"
+   }
+  ]
+ }
+]
