@@ -3,269 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>课表管理后台</title>
+<title>课表后台 v5</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f4f5f7;color:#2b2f36;padding:16px;max-width:860px;margin:0 auto}
-h1{font-size:22px}
-.sub{color:#888;font-size:12px;margin:4px 0 14px;line-height:1.7}
-.card{background:#fff;border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.card h2{font-size:16px;margin-bottom:10px;border-left:4px solid #ff7043;padding-left:8px}
-input{width:100%;padding:9px 10px;border:1px solid #d5d9e0;border-radius:8px;font-size:14px;box-sizing:border-box}
-.btn{display:inline-block;background:#ff7043;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:14px;cursor:pointer;margin:6px 4px 0 0}
-.btn.g{background:#6b7280}.btn.r{background:#dc2626}.btn.b{background:#10b981}
-.cat{background:#f8f9fb;border:1px solid #e5e8ee;border-radius:10px;padding:10px 12px;margin-bottom:8px}
-.cat .top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px}
-.cat .nm{font-weight:700}.cat .cnt{color:#999;font-size:12px}
-.sm{padding:5px 9px !important;font-size:12px !important;margin:0 0 0 3px}
-.bread{font-size:13px;color:#ff7043;margin-bottom:10px}
-.bread span{cursor:pointer;background:#fff3ec;padding:3px 8px;border-radius:6px;margin-right:4px}
-.media{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
-.mitem{position:relative;width:96px;text-align:center}
-.mitem img,.mitem video{width:96px;height:120px;object-fit:cover;border-radius:8px;background:#eee}
-.mitem .x{position:absolute;top:-5px;right:-5px;background:#dc2626;color:#fff;border:none;border-radius:50%;width:19px;height:19px;font-size:11px;cursor:pointer}
-.mitem .tag{font-size:10px;color:#999;margin-top:2px}
-.pubbtn{background:#10b981;width:100%;text-align:center;font-size:16px;padding:14px;font-weight:700}
-#st{font-size:13px;color:#666;min-height:20px;margin-top:8px}
-.tip{font-size:11px;color:#999;margin-top:8px;line-height:1.8}
-.login{max-width:420px;margin:50px auto;background:#fff;border-radius:14px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
-#file{font-size:13px}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f0f2f5;color:#222;padding:14px;max-width:760px;margin:0 auto}
+.logo{font-size:20px;font-weight:800;margin-bottom:2px}
+.sub{font-size:12px;color:#888;margin-bottom:14px}
+.card{background:#fff;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.h2{font-size:15px;font-weight:700;margin-bottom:12px;border-left:4px solid #ff7043;padding-left:8px}
+input[type=text],input[type=password]{width:100%;padding:11px 12px;border:1px solid #d5d9e0;border-radius:10px;font-size:15px;margin:4px 0 8px}
+input[type=file]{width:100%;padding:10px;border:1px dashed #bbb;border-radius:10px;background:#fafbfc;font-size:13px;margin:4px 0 10px}
+.btn{display:inline-block;background:#ff7043;color:#fff;border:none;padding:11px 18px;border-radius:10px;font-size:15px;cursor:pointer;margin:4px 4px 0 0}
+.btn.g{background:#6b7280}.btn.r{background:#dc2626}.btn.b{background:#10b981}.btn.o{background:#fff;border:1px solid #d5d9e0;color:#555}
+.row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 8px;border-bottom:1px solid #f0f0f0}
+.row:last-child{border-bottom:none}
+.nm{font-size:15px;font-weight:600}
+.meta{font-size:11px;color:#999;margin-top:2px}
+.bread{font-size:13px;margin-bottom:12px;color:#ff7043}
+.bread span{cursor:pointer;background:#fff;border:1px solid #ffd9c7;padding:4px 10px;border-radius:16px;margin-right:6px;color:#e2502a}
+.media{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.mi{width:100px}
+.mi img,.mi video{width:100px;height:110px;object-fit:cover;border-radius:8px;background:#eee}
+.mi .rm{display:block;margin:4px auto 0;background:#dc2626;color:#fff;border:none;border-radius:6px;padding:3px 12px;font-size:12px;cursor:pointer}
+.big{width:100%;text-align:center;font-size:17px;font-weight:800;padding:15px;background:#10b981;border:none;color:#fff;border-radius:12px;cursor:pointer}
+#st{font-size:13px;color:#555;margin-top:10px;min-height:18px}
+.tip{font-size:11px;color:#999;line-height:1.7;margin-top:8px}
+.login{max-width:400px;margin:60px auto;background:#fff;border-radius:16px;padding:30px;box-shadow:0 6px 30px rgba(0,0,0,.08)}
 </style>
 </head>
 <body>
 <div id="loginBox" class="login">
-  <h1 style="text-align:center">🔐 后台登录</h1>
-  <p class="sub" style="text-align:center">填写一次，浏览器会记住</p>
-  <label>GitHub Token</label><input id="tk" placeholder="粘贴你的Token">
-  <label>管理密码</label><input id="pw" type="password" placeholder="hoyo2010">
-  <button class="btn" style="width:100%;text-align:center;margin-top:12px" onclick="login()">登录并测试</button>
-  <div class="tip">Token 在 GitHub → Settings → Developer settings → Personal access tokens 生成（勾 repo）</div>
+  <div style="text-align:center;font-size:20px;font-weight:800;margin-bottom:6px">🔐 课表后台</div>
+  <div class="sub" style="text-align:center;margin-bottom:16px">登录一次，浏览器记住</div>
+  <input type="text" id="tk" placeholder="GitHub Token">
+  <input type="password" id="pw" placeholder="管理密码 hoyo2010">
+  <button class="btn" style="width:100%;text-align:center;font-size:16px" onclick="login()">登录</button>
 </div>
 
 <div id="main" style="display:none">
-  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
-    <div><h1>📚 课表管理</h1><p class="sub">支持三级分类（分类→子分类→孙分类）· 图片和视频<br>改完点「🔄 同步到网站」→ 前台20秒内自动更新 <b>| v4</b></p></div>
-    <button class="btn g" onclick="location.reload()">退出登录</button>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div><div class="logo">📚 课表管理</div><div class="sub">打开文件夹 → 上传 → 保存到网站</div></div>
+    <button class="btn g" onclick="location.reload()">退出</button>
   </div>
 
   <div class="card">
-    <h2>⚙️ 网站名称</h2>
-    <input id="siteTitle" placeholder="最新课表展示">
-    <input id="siteDesc" placeholder="点击分类查看课表" style="margin-top:6px">
-  </div>
-
-  <div class="card">
-    <h2 id="catH">📁 分类管理</h2>
+    <div class="h2">📁 文件夹</div>
     <div class="bread" id="bread"><span onclick="go([])">🏠 首页</span></div>
-    <div style="display:flex;gap:6px">
-      <input id="newName" placeholder="子分类名（如：高一课表）" style="flex:2">
-      <input id="newDesc" placeholder="描述(可选)" style="flex:2">
-      <button class="btn" onclick="addCat()">➕</button>
+    <div id="cats"></div>
+    <div style="display:flex;gap:6px;margin-top:10px">
+      <input type="text" id="nn" placeholder="新建分类名" style="flex:2;margin:0">
+      <button class="btn" style="margin:0" onclick="addCat()">➕ 新建</button>
     </div>
-    <div id="catList" style="margin-top:10px"></div>
   </div>
 
   <div class="card">
-    <h2 id="mh">🖼️ 媒体（当前文件夹）</h2>
-    <input type="file" id="file" accept="image/*,video/*" multiple>
-    <button class="btn g" onclick="addFiles()">⬆️ 上传所选（图/视频）</button>
-    <div id="mediaList" class="media"></div>
-    <div class="tip">图片自动压缩；视频建议 ≤60MB，添加后请尽快同步（刷新会丢失未同步的大视频）</div>
+    <div class="h2" id="mh">⬆️ 上传（请先打开一个文件夹）</div>
+    <input type="file" id="f" accept="image/*,video/*" multiple>
+    <button class="btn b" onclick="up()">⬆️ 上传所选</button>
+    <div id="medialist" class="media"><div class="tip">这里显示当前文件夹的图片/视频</div></div>
   </div>
 
   <div class="card" style="background:#eefbf3;border:1px solid #bfe8cd">
-    <button class="btn pubbtn" onclick="sync()">🔄 同步到网站（上传所有改动）</button>
+    <button class="big" onclick="save()">🔄 保存到网站</button>
     <div id="st"></div>
+    <div class="tip">保存后，前台 20 秒内自动更新（https://laogallery.github.io）</div>
   </div>
 </div>
 
 <script>
-var DATA_KEY="gd_v4",TOKEN="",PW="hoyo2010",data={siteTitle:"最新课表展示",siteDesc:"点击分类查看课表",cats:[]},nav=[],cur=-1;
+var K="gd_v5",TOKEN="",PW="hoyo2010",D={t:"最新课表展示",s:"点击分类查看课表",cats:[]},nav=[];
 var API="https://api.github.com/repos/laogallery/laogallery.github.io/contents";
 function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
-function level(){var n=data.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
-function curNode(){var n=data.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n[nav[nav.length-1]];}
-function saveLocal(){
-  // 视频d不落localStorage（太大）
-  var copy=JSON.parse(JSON.stringify(data));
-  (function walk(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){if(m.t==="vid")return {t:m.t,s:m.s};return {t:m.t,s:m.s,d:m.d||undefined};});walk(x.children||[]);});})(copy.cats);
-  delete copy._mem;
-  try{localStorage.setItem(DATA_KEY,JSON.stringify(copy));}catch(e){console.log("ls full");}
-}
-function load(){try{var s=localStorage.getItem(DATA_KEY);if(s){var d=JSON.parse(s);if(d.cats)data=d;}}catch(e){}}
+function node(){var n=D.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n;}
+function curNode(){if(!nav.length)return null;var n=D.cats;for(var i=0;i<nav.length;i++)n=n[nav[i]].children||[];return n[nav[nav.length-1]];}
+function ld(){try{var s=localStorage.getItem(K);if(s){var d=JSON.parse(s);if(d&&d.cats)D=d;}}catch(e){}}
+function sv(){try{var c=JSON.parse(JSON.stringify(D));(function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return m.t==="vid"?{t:"vid",s:m.s}:{t:"img",s:m.s,d:m.d};});w(x.children||[]);});})(c.cats);localStorage.setItem(K,JSON.stringify(c));}catch(e){}}
 function login(){
   var t=document.getElementById("tk").value.trim(),p=document.getElementById("pw").value;
-  if(p!==PW){alert("管理密码错误");return;}
-  if(!t){alert("请输入GitHub Token");return;}
-  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"gallery-admin"}})
+  if(p!==PW){alert("密码错误");return;}
+  if(!t){alert("请输入Token");return;}
+  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}})
   .then(function(r){if(!r.ok)throw 0;return r.json();})
-  .then(function(u){
-    if(u.login!=="laogallery"){alert("Token不属于本账号");return;}
-    TOKEN=t;localStorage.setItem("gd_token",t);
-    document.getElementById("loginBox").style.display="none";
-    document.getElementById("main").style.display="block";
-    loadCloud();
-  }).catch(function(){alert("❌ Token无效或网络错误，请检查后重试");});
+  .then(function(u){if(u.login!=="laogallery"){alert("Token不属于本账号");return;}TOKEN=t;localStorage.setItem("gd_tk",t);document.getElementById("loginBox").style.display="none";document.getElementById("main").style.display="block";loadC();})
+  .catch(function(){alert("Token无效，请重试");});
 }
-function gh(path,method,data2){return fetch(API+path,{method:method||"GET",headers:{"Authorization":"token "+TOKEN,"Accept":"application/vnd.github+json","User-Agent":"gallery-admin","Content-Type":"application/json"},body:data2?JSON.stringify(data2):undefined});}
+function gh(p,m,d2){return fetch(API+p,{method:m||"GET",headers:{"Authorization":"token "+TOKEN,"User-Agent":"ga","Content-Type":"application/json"},body:d2?JSON.stringify(d2):undefined});}
 function b64u(s){return btoa(unescape(encodeURIComponent(s)));}
-function db64(s){return decodeURIComponent(escape(atob(s)));}
-function loadCloud(){
-  setSt("正在从云端读取...");
+function d64(s){return decodeURIComponent(escape(atob(s)));}
+function mig(x){if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}x.media=x.media||[];x.children=(x.children||[]).map(mig);return x;}
+function loadC(){
+  st("读取云端...");
   Promise.all([
-    gh("/content/settings.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var s=JSON.parse(db64(j.content));data.siteTitle=s.siteTitle||data.siteTitle;data.siteDesc=s.siteDesc||data.siteDesc;}}).catch(()=>{}),
-    gh("/content/index.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var c=JSON.parse(db64(j.content));c=c.map(function(x){return migrate(x);});data.cats=c;}}).catch(()=>{})
-  ]).then(function(){saveLocal();render();setSt("✅ 已读取云端数据");});
+    gh("/content/settings.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){var s=JSON.parse(d64(j.content));D.t=s.siteTitle||D.t;D.s=s.siteDesc||D.s;}}).catch(()=>{}),
+    gh("/content/index.json?t="+Date.now()).then(r=>r.ok?r.json():null).then(j=>{if(j){D.cats=JSON.parse(d64(j.content)).map(mig);}}).catch(()=>{})
+  ]).then(function(){sv();show();st("✅ 已读取");});
 }
-function migrate(x){
-  // 兼容旧数据 images → media
-  if(!x.media&&x.images){x.media=x.images.map(function(im){return {t:"img",s:im.src};});}
-  x.media=x.media||[];x.children=(x.children||[]).map(function(c){return migrate(c);});
-  return x;
-}
-function render(){
-  document.getElementById("siteTitle").value=data.siteTitle;
-  document.getElementById("siteDesc").value=data.siteDesc;
+function show(){
   // 面包屑
   var b=document.getElementById("bread"),h='<span onclick="go([])">🏠 首页</span>';
-  var names=[],n=data.cats;
+  var names=[],n=D.cats;
   for(var i=0;i<nav.length;i++){names.push(n[nav[i]]?n[nav[i]].name:"?");n=n[nav[i]].children||[];}
   for(var k=0;k<names.length;k++){h+='<span onclick="go('+JSON.stringify(nav.slice(0,k+1))+')">'+esc(names[k])+'</span>';}
   b.innerHTML=h;
-  document.getElementById("catH").textContent="📁 分类管理"+(nav.length?"（"+(curNode()?curNode().name:"")+" 的子分类）":"");
-  var lv=level(),bl=document.getElementById("catList");bl.innerHTML="";
-  if(!lv.length){bl.innerHTML='<div class="tip">还没有分类，先添加一个</div>';}
+  // 分类列表
+  var lv=node(),box=document.getElementById("cats");box.innerHTML="";
+  if(!lv.length)box.innerHTML='<div class="tip">还没有分类，下面新建一个</div>';
   lv.forEach(function(c,i){
     var kids=(c.children||[]).length,ms=(c.media||[]).length;
-    var d=document.createElement("div");d.className="cat";
-    d.innerHTML='<div class="top"><div><span class="nm">'+esc(c.name)+(c.pwHash?" 🔒":"")+'</span> <span class="cnt">'+(kids?"子分类 "+kids+" · ":"")+ms+" 媒体</span></div><div>"+
-      '<button class="btn sm g" onclick="goInto('+i+')">📂</button>'+
-      '<button class="btn sm g" onclick="setPw('+i+')">🔒</button>'+
-      '<button class="btn sm g" onclick="editCat('+i+')">✏️</button>'+
-      '<button class="btn sm g" onclick="mv('+i+',-1)">↑</button>'+
-      '<button class="btn sm g" onclick="mv('+i+',1)">↓</button>'+
-      '<button class="btn sm r" onclick="delCat('+i+')">🗑️</button></div></div>';
-    bl.appendChild(d);
+    var d=document.createElement("div");d.className="row";
+    d.innerHTML='<div style="flex:1"><div class="nm">'+esc(c.name)+(c.pwHash?" 🔒":"")+'</div><div class="meta">'+(kids?"子分类 "+kids+" · ":"")+ms+" 个媒体</div></div>'+
+      '<div><button class="btn o" style="margin:0 0 0 3px" onclick="into('+i+')">📂 打开</button>'+
+      '<button class="btn o" style="margin:0 0 0 3px" onclick="setpw('+i+')">🔒</button>'+
+      '<button class="btn o" style="margin:0 0 0 3px" onclick="edit('+i+')">✏️</button>'+
+      '<button class="btn r" style="margin:0 0 0 3px" onclick="del('+i+')">🗑</button></div>';
+    box.appendChild(d);
   });
-  renderMediaBox();
-}
-function renderMediaBox(){
-  var ml=document.getElementById("mediaList");if(!ml)return;
-  var folderName=nav.length?(curNode()?curNode().name:"?"):"（根目录·只放分类）";
-  var mh=document.getElementById("mh");if(mh)mh.textContent="🖼️ 媒体（当前文件夹："+folderName+"）";
-  if(!nav.length){ml.innerHTML='<div class="tip">📂 先在「分类管理」点某分类的 📂 打开文件夹，再在这里上传图片/视频</div>';return;}
+  // 媒体
+  document.getElementById("mh").textContent="⬆️ 上传"+(curNode()?"（当前文件夹："+curNode().name+"）":"（请先打开一个文件夹）");
+  var ml=document.getElementById("medialist");ml.innerHTML="";
+  if(!nav.length){ml.innerHTML='<div class="tip">点上面分类的「📂 打开」进入文件夹后，才能上传</div>';return;}
   var mc=curNode().media;
-  if(!mc||!mc.length){ml.innerHTML='<div class="tip">该文件夹还没有媒体，选好图片/视频点上传即可</div>';}
-  (mc||[]).forEach(function(m,j){
-    var w=document.createElement("div");w.className="mitem";
-    var src=m.d||m.s;
-    var inner=m.t==="vid"?'<video src="'+src+'" style="width:96px;height:76px;object-fit:cover"></video>':'<img src="'+src+'">';
-    w.innerHTML='<div style="position:relative">'+inner+'<button class="x" onclick="delM('+j+')">×</button></div><div class="tag">'+(m.t==="vid"?"▶ 视频":"🖼 图片")+'</div>';
+  if(!mc.length)ml.innerHTML='<div class="tip">这个文件夹还没有媒体</div>';
+  mc.forEach(function(m,j){
+    var w=document.createElement("div");w.className="mi";
+    var u=m.d||m.s;
+    w.innerHTML=(m.t==="vid"?'<video src="'+u+'" style="width:100px;height:110px;object-fit:cover;background:#000"></video>':'<img src="'+u+'">')+'<button class="rm" onclick="rm('+j+')">删除</button>';
     ml.appendChild(w);
   });
 }
-function go(p){nav=p;render();}
-function goInto(i){if(nav.length>=2){alert("最多三级分类");return;}nav=nav.concat([i]);render();}
-function addCat(){
-  var n=document.getElementById("newName").value.trim();if(!n){alert("请输入分类名");return;}
-  if(nav.length>=2){ // 当前层已是第三级的children = 第四级，禁止
-    alert("已达三级上限：请在第三级分类下直接放媒体");return;
-  }
-  level().push({name:n,desc:document.getElementById("newDesc").value.trim(),pwHash:"",media:[],children:[]});
-  document.getElementById("newName").value="";document.getElementById("newDesc").value="";
-  saveLocal();render();setSt("已添加（点「同步」生效）");
-}
-function editCat(i){var n=prompt("分类名",level()[i].name);if(n==null)return;var d=prompt("描述",level()[i].desc||"");if(d==null)return;level()[i].name=n;level()[i].desc=d;saveLocal();render();setSt("已修改（点「同步」生效）");}
-function delCat(i){if(!confirm("删除该分类？其下子分类/媒体一并删除！"))return;level().splice(i,1);saveLocal();render();setSt("已删除（点「同步」生效）");}
-function mv(i,dir){var j=i+dir;if(j<0||j>=level().length)return;var t=level()[i];level()[i]=level()[j];level()[j]=t;saveLocal();render();}
+function go(p){nav=p;show();}
+function into(i){if(nav.length>=2){alert("最多三级");return;}nav=nav.concat([i]);show();}
+function addCat(){var n=document.getElementById("nn").value.trim();if(!n){alert("输入名字");return;}if(nav.length>=2){alert("已达三级上限");return;}node().push({name:n,desc:"",pwHash:"",media:[],children:[]});document.getElementById("nn").value="";sv();show();st("已新建（保存后生效）");}
+function edit(i){var n=prompt("分类名",node()[i].name);if(n==null)return;node()[i].name=n;sv();show();st("已改");}
+function del(i){if(!confirm("删除该分类（含子分类和媒体）？"))return;node().splice(i,1);sv();show();st("已删");}
 function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
-function setPw(i){
-  var c=level()[i],curS=c.pwHash?"（当前已设密码）":"（当前无密码）";
-  var p=prompt("🔒 设置该分类的打开密码\n"+curS+"\n\n输入新密码（留空并确定=取消密码）：");
+function setpw(i){
+  var c=node()[i],p=prompt("设置打开密码（留空=取消）：");
   if(p==null)return;
-  if(p===""){c.pwHash="";saveLocal();render();setSt("已取消密码（点「同步」生效）");return;}
-  var p2=prompt("再输一次确认：");
-  if(p2!==p){alert("两次输入不一致");return;}
-  sha256(p).then(function(h){c.pwHash=h;saveLocal();render();setSt("✅ 密码已设置（点「同步」生效）");});
+  if(p===""){c.pwHash="";sv();show();st("已取消密码");return;}
+  sha256(p).then(function(h){c.pwHash=h;sv();show();st("✅ 已设密码");});
 }
-function delM(j){curNode().media.splice(j,1);saveLocal();render();setSt("已删除（点「同步」生效）");}
-function addFiles(){
-  var fs=document.getElementById("file").files;if(!fs.length){alert("请选择文件");return;}
+function rm(j){curNode().media.splice(j,1);sv();show();st("已删（保存后生效）");}
+function up(){
+  var fs=document.getElementById("f").files;if(!fs.length){alert("先选文件");return;}
+  if(!nav.length){alert("先打开一个文件夹");return;}
   var arr=Array.from(fs),done=0,t0=Date.now();
-  if(!nav.length){alert("请先点分类行的 📂 打开一个文件夹，再上传");document.getElementById("file").value="";return;}
-  (function next(){
-    if(done>=arr.length){saveLocal();render();document.getElementById("file").value="";setSt("已添加 "+arr.length+" 个（点「同步」生效）");return;}
+  (function nx(){
+    if(done>=arr.length){sv();show();document.getElementById("f").value="";st("已添加 "+arr.length+" 个（点保存生效）");return;}
     var f=arr[done];
     if(f.type.startsWith("video/")){
-      if(f.size>60*1024*1024){alert("视频超过60MB，请压缩后重试： "+f.name);done++;next();return;}
-      var r=new FileReader();
-      r.onload=function(e){
-        var ext=f.name.split(".").pop().toLowerCase()||"mp4";
-        var file="/media/v_"+t0+"_"+done+"."+ext;
-        curNode().media.push({t:"vid",s:file,d:e.target.result});
-        done++;next();
-      };
-      r.readAsDataURL(f);
+      if(f.size>60*1024*1024){alert("视频超60MB："+f.name);done++;nx();return;}
+      var r=new FileReader();r.onload=function(e){curNode().media.push({t:"vid",s:"/media/v_"+t0+"_"+done+"."+(f.name.split(".").pop()||"mp4"),d:e.target.result});done++;nx();};r.readAsDataURL(f);
     }else if(f.type.startsWith("image/")){
-      var r2=new FileReader();
-      r2.onload=function(e){var img=new Image();
-        img.onload=function(){var max=900,w=img.width,h=img.height;if(w>max){h=h*max/w;w=max;}var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);
-          var file="/media/img_"+t0+"_"+done+".jpg";
-          curNode().media.push({t:"img",s:file,d:c.toDataURL("image/jpeg",0.55)});
-          done++;next();};
-        img.src=e.target.result;};
-      r2.readAsDataURL(f);
-    }else{done++;next();}
+      var r2=new FileReader();r2.onload=function(e){var im=new Image();im.onload=function(){var w=900,h=im.height*900/im.width;var c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(im,0,0,w,h);curNode().media.push({t:"img",s:"/media/img_"+t0+"_"+done+".jpg",d:c.toDataURL("image/jpeg",0.55)});done++;nx();};im.src=e.target.result;};r2.readAsDataURL(f);
+    }else{done++;nx();}
   })();
 }
-function setSt(m){document.getElementById("st").textContent=m;}
-function ghPut(path,content,retry){
-  return gh(path+"?t="+Date.now()).then(r=>r.ok?r.json():null).then(function(ex){
-    var b2={message:"sync",content:b64u(content),branch:"main"};
-    if(ex&&ex.sha)b2.sha=ex.sha;
-    return gh(path,"PUT",b2).then(function(r){
-      if(r.ok)return {ok:true};
-      if(retry>0)return ghPut(path,content,retry-1);
-      return {ok:false,code:r.status};
-    });
-  }).catch(function(){if(retry>0)return ghPut(path,content,retry-1);return {ok:false,code:"网络"};});
+function st(m){document.getElementById("st").textContent=m;}
+function ghPut(p,ct,rt){
+  return gh(p+"?t="+Date.now()).then(r=>r.ok?r.json():null).then(function(ex){
+    var b={message:"sync",content:b64u(ct),branch:"main"};if(ex&&ex.sha)b.sha=ex.sha;
+    return gh(p,"PUT",b).then(function(r){if(r.ok)return true;if(rt>0)return ghPut(p,ct,rt-1);return false;});
+  }).catch(function(){if(rt>0)return ghPut(p,ct,rt-1);return false;});
 }
-function sync(){
-  setSt("同步中，请稍候（媒体多时较慢）...");
-  var tasks=[];
-  (function collect(a){a.forEach(function(x){x.media.forEach(function(m){if(m.d&&m.s.indexOf("media/")>=0){var b64=m.d.indexOf(",")>=0?m.d.substring(m.d.indexOf(",")+1):m.d;tasks.push({p:m.s,b:b64});m.d="";}});collect(x.children||[]);});})(data.cats);
-  var up=function(i){
-    if(i>=tasks.length)return Promise.resolve({bad:[]});
-    var t=tasks[i];
-    setSt("上传媒体 "+(i+1)+"/"+tasks.length+" ...");
-    return ghPut("/"+t.p.replace(/^\//,""),t.b,1).then(function(r){
-      if(!r.ok)return up(i+1).then(function(x){x.bad.push(t.p+"("+r.code+")");return x;});
-      return up(i+1);
-    });
-  };
-  up(0).then(function(res){
-    var clean=JSON.parse(JSON.stringify(data));
-    (function walk(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return {t:m.t,s:m.s};});walk(x.children||[]);});})(clean.cats);
-    return Promise.all([
-      ghPut("/content/settings.json",JSON.stringify({siteTitle:data.siteTitle,siteDesc:data.siteDesc}),1),
-      ghPut("/content/index.json",JSON.stringify(clean.cats),1)
-    ]).then(function(rr){
-      var ok1=rr[0].ok,ok2=rr[1].ok,msg="";
-      if(res.bad.length)msg="\n失败媒体: "+res.bad.slice(0,3).join("; ");
-      if(ok1&&ok2){saveLocal();render();setSt("✅ 同步成功！前台20秒内自动更新");alert("✅ 已同步到网站，前台马上更新"+msg);}
-      else{
-        var why=!ok1?("设置"+rr[0].code):("数据"+rr[1].code);
-        setSt("❌ 同步失败("+why+")"+msg);alert("❌ 同步失败："+why+msg+"\n建议：检查网络后重试；若持续失败请退出重新登录");
-      }
-    });
-  });
+function save(){
+  st("保存中...");var tasks=[];
+  (function col(a){a.forEach(function(x){x.media.forEach(function(m){if(m.d&&m.s.indexOf("media/")>=0){var b=m.d.indexOf(",")>=0?m.d.substring(m.d.indexOf(",")+1):m.d;tasks.push({p:m.s,b:b});m.d="";}});col(x.children||[]);});})(D.cats);
+  var i=0;
+  (function nx(){
+    if(i>=tasks.length){sv();show();
+      var clean=JSON.parse(JSON.stringify(D));
+      (function w(a){a.forEach(function(x){x.media=(x.media||[]).map(function(m){return {t:m.t,s:m.s};});w(x.children||[]);});})(clean.cats);
+      Promise.all([
+        ghPut("/content/settings.json",JSON.stringify({siteTitle:D.t,siteDesc:D.s})),
+        ghPut("/content/index.json",JSON.stringify(clean.cats))
+      ]).then(function(rr){
+        if(rr[0]&&rr[1]){st("✅ 已保存！前台20秒内更新");alert("✅ 已保存到网站");}
+        else{alert("❌ 保存失败，请重试");st("❌ 保存失败");}
+      });
+      return;
+    }
+    st("上传 "+(i+1)+"/"+tasks.length+" ...");
+    ghPut("/"+tasks[i].p.replace(/^\//,""),tasks[i].b,1).then(function(ok){if(!ok)alert("媒体上传失败："+tasks[i].p);i++;nx();});
+  })();
 }
-var t=localStorage.getItem("gd_token");
-if(t){TOKEN=t;
-  fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"gallery-admin"}})
-  .then(r=>r.ok?r.json():null).then(u=>{if(u&&u.login==="laogallery"){document.getElementById("loginBox").style.display="none";document.getElementById("main").style.display="block";loadCloud();}}).catch(()=>{});
-}
-load();
+var t=localStorage.getItem("gd_tk");
+if(t){TOKEN=t;fetch("https://api.github.com/user",{headers:{Authorization:"token "+t,"User-Agent":"ga"}}).then(r=>r.ok?r.json():null).then(function(u){if(u&&u.login==="laogallery"){document.getElementById("loginBox").style.display="none";document.getElementById("main").style.display="block";loadC();}}).catch(()=>{});}
+ld();
 </script>
 </body>
 </html>
