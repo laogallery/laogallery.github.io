@@ -49,7 +49,7 @@ function load(){
   Promise.all([
     fetch("content/settings.json?t="+Date.now()).then(r=>r.json()).catch(()=>st),
     fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>[])
-  ]).then(([s,c])=>{st=s;cats=c;home();});
+  ]).then(([s,c])=>{st=s;cats=c;home();var n=0;c.forEach(function(x){n+=x.images?x.images.length:0;});document.getElementById("diag").textContent="数据: "+c.length+" 个分类 / "+n+" 张图 · "+new Date().toLocaleTimeString();});
 }
 function home(){
   cur=-1;
