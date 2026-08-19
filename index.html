@@ -52,6 +52,7 @@ function load(){
   ]).then(([s,c])=>{st=s;cats=c;home();});
 }
 function home(){
+  cur=-1;
   document.getElementById("t").textContent=st.siteTitle||"最新课表展示";
   document.getElementById("s").textContent=st.siteDesc||"点击分类查看课表";
   document.getElementById("back").style.display="none";
@@ -62,21 +63,22 @@ function home(){
   }).join('')+'</div>';
 }
 function sha256(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0");}).join("");});}
-function openCat(i){
-  var c=cats[i],imgs=c.images||[];
-  if(c.pwHash){
-    var p=prompt("🔒 该分类需要密码才能打开\n请输入密码：");
-    if(p==null)return;
-    sha256(p).then(function(h){
-      if(h!==c.pwHash){alert("❌ 密码错误");return;}
-      showCat(c);
-    });
-    return;
-  }
-  showCat(c);
+var unlocked={},cur=-1;
+function askPw(i){
+  var p=prompt("🔒 该分类需要密码才能打开\n请输入密码：");
+  if(p==null)return;
+  sha256(p).then(function(h){
+    if(h!==cats[i].pwHash){alert("❌ 密码错误，请重试");askPw(i);return;}
+    unlocked[i]=true;showCat(i);
+  });
 }
-function showCat(c){
-  var imgs=c.images||[];
+function openCat(i){
+  var c=cats[i];
+  if(c.pwHash&&!unlocked[i]){askPw(i);return;}
+  showCat(i);
+}
+function showCat(i){
+  var c=cats[i],imgs=c.images||[],cur=i;
   document.getElementById("t").textContent=c.name;
   document.getElementById("s").textContent=c.desc||"";
   document.getElementById("back").style.display="inline-block";
@@ -91,7 +93,7 @@ function lb(src){document.getElementById("bi").src=src;document.getElementById("
 load();
 setInterval(function(){
   fetch("content/index.json?t="+Date.now()).then(r=>r.json()).catch(()=>null).then(d=>{
-    if(d&&JSON.stringify(d)!==JSON.stringify(cats)){cats=d;home();}
+    if(d&&JSON.stringify(d)!==JSON.stringify(cats)){cats=d;if(cur>=0&&cats[cur])showCat(cur);else home();}
   });
 },20000);
 </script>
